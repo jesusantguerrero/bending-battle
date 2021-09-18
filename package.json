@@ -1,0 +1,19 @@
+{
+  "name": "web3-example",
+  "version": "1.0.0",
+  "description": "demo of web3.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "^2.0.2",
+    "@nomiclabs/hardhat-waffle": "^2.0.1",
+    "chai": "^4.3.4",
+    "ether": "0.0.9",
+    "ethereum-waffle": "^3.4.0",
+    "hardhat": "^2.6.4"
+  }
+}
