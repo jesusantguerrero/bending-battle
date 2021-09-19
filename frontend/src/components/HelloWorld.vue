@@ -1,10 +1,10 @@
 <script setup>
 import { ethers } from "ethers";
+import CatClicker from "./CatClicker/admin.vue"
 import {  reactive, computed, ref } from "vue";
-import contractJSON from "../../../artifacts/contracts/Greeter.sol/Greeter.json";
-
+import greeterJSON from "../../../artifacts/contracts/Greeter.sol/Greeter.json";
+import CatJSON from "../../../artifacts/contracts/CatClicker.sol/CatClicker.json";
 const provider = new ethers.providers.WebSocketProvider("ws://localhost:8545")
-const greeterContract = new ethers.ContractFactory(contractJSON.abi, contractJSON.bytecode, provider.getSigner());
 
 const tabsState = reactive({
   current: "Assets",
@@ -28,10 +28,20 @@ const getAccounts = async () => {
   getBalance(state.accounts[0]);
 }
 
+//  Contracts
 const greeter = ref(null);
+const catClickerContract = ref(null);
+
 const initContract = async () => {
+  const greeterContract = new ethers.ContractFactory(greeterJSON.abi, greeterJSON.bytecode, provider.getSigner());
+  const catContract = new ethers.ContractFactory(CatJSON.abi, CatJSON.bytecode, provider.getSigner());
+  
+  
   greeter.value = await greeterContract.deploy("Hello world");
-  await greeter.value.deployed()
+  console.log(greeter.value)
+  
+  catClickerContract.value = await catContract.deploy();
+  console.log(catClickerContract.value)
 }
 
 initContract();
@@ -58,6 +68,9 @@ getAccounts();
       <button class="w-32 mb-5 btn btn-primary" @click="greet()">Greet</button>
       {{ state.greet }}
   </div>
+
+  <CatClicker :contract="catClickerContract" />
+
   <div class="flex justify-center mt-5">
     <div class="text-center tabs">
       <a 

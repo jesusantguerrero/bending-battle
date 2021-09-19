@@ -1,6 +1,8 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
 
+import "hardhat/console.sol";
+
 contract CatClicker {
     event NewCat(uint catId, string name, uint dna, string url);
     
@@ -28,13 +30,12 @@ contract CatClicker {
         return rand % dnaModulus;
     }
 
-    function createRamdomCat(string memory _name, string memory _url) public {
+    function createRandomCat(string memory _name, string memory _url) public {
         uint randDna = _generateRandomDna(_name);
         _createCat(_name, randDna, _url);
     }
 
     function getCats() public view returns (Cat[] memory) {
         return cats;
-    }  
-
+    }
 }
