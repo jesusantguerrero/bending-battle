@@ -8,6 +8,8 @@ const props = defineProps({
     }
 });
 
+const emit = defineEmits(['cat-added'])
+
 const form = reactive({
     name: '',
     url: ''
@@ -20,8 +22,9 @@ const clearForm = () => {
 
 const { contract } = toRefs(props);
 const addCat = async () => {
-    console.log(contract.value.cats);
-    await contract.value.createRandomCat(form.name, form.url);
+    const trx = await contract.value.createRandomCat(form.name, form.url);
+    trx.wait();
+    emit('cat-added');
     clearForm();
 }
 </script>

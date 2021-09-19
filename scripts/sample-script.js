@@ -11,8 +11,9 @@ async function deployContract(contractName, args = null) {
   console.log(`${contractName} deployed to:`, contract.address);
 }
 async function main() {
-  await deployContract("CatClicker");
-  await deployContract("Greeter", "Hello, Hardhat!");
+  // await deployContract("CatClicker");
+  // await deployContract("Greeter", "Hello, Hardhat!");
+  await deployContract("Clicker");
 }
 
 // We recommend this pattern to be able to use async/await everywhere

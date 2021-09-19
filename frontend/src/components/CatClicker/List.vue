@@ -1,27 +1,23 @@
 <script setup> 
-import { onMounted, toRefs } from 'vue';
+import CatCard from './CatCard.vue';
 
-const props = defineProps({
-    contract: {
-        type: Object,
-        required: true
+defineProps({
+    cats: {
+        type: Array,
+        required: true,
     }
 });
-
-onMounted(() => {
-    const { contract } = toRefs(props);
-    console.log(contract.value, "Here in list");
-    contract.value.provider.on('NewCat', (cat) => {
-        console.log(cat);
-    });
-})
 </script>
 
 <template>
-    <div v-if="contract && contract.cats">
-        <div v-for="cat in contract.cats">
-            {{ cat }}
-            Hola soy un gato
-        </div>
+    <div class="flex justify-center mx-auto space-x-5">
+        <CatCard 
+            v-for="(cat, index) in cats" 
+            :name="cat.name" 
+            :url="cat.url" 
+            :count="cat.clicks"
+            class="transform cursor-pointer hover:scale-105"
+            @click="$emit('click', index)"
+        />
     </div>
 </template>

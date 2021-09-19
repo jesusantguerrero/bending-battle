@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import CatClicker from "./CatClicker/Index.vue"
 import {  reactive, computed, ref } from "vue";
 import greeterJSON from "../../../artifacts/contracts/Greeter.sol/Greeter.json";
-import CatJSON from "../../../artifacts/contracts/CatClicker.sol/CatClicker.json";
+import CatJSON from "../../../artifacts/contracts/Clicker.sol/Clicker.json";
 const provider = new ethers.providers.WebSocketProvider("ws://localhost:8545")
 
 const tabsState = reactive({
@@ -56,10 +56,6 @@ getAccounts();
       <button class="btn btn-primary">Send</button>
       <button class="btn btn-primary">Swap</button>
     </div>
-  </div>
-  <div class="flex flex-col items-center justify-center w-full mt-5 text-center">
-      <button class="w-32 mb-5 btn btn-primary" @click="greet()">Greet</button>
-      {{ state.greet }}
   </div>
 
   <CatClicker :contract="catClickerContract" />
