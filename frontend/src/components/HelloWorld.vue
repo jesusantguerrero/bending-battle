@@ -1,6 +1,6 @@
 <script setup>
 import { ethers } from "ethers";
-import CatClicker from "./CatClicker/admin.vue"
+import CatClicker from "./CatClicker/Index.vue"
 import {  reactive, computed, ref } from "vue";
 import greeterJSON from "../../../artifacts/contracts/Greeter.sol/Greeter.json";
 import CatJSON from "../../../artifacts/contracts/CatClicker.sol/CatClicker.json";
@@ -33,15 +33,8 @@ const greeter = ref(null);
 const catClickerContract = ref(null);
 
 const initContract = async () => {
-  const greeterContract = new ethers.ContractFactory(greeterJSON.abi, greeterJSON.bytecode, provider.getSigner());
-  const catContract = new ethers.ContractFactory(CatJSON.abi, CatJSON.bytecode, provider.getSigner());
-  
-  
-  greeter.value = await greeterContract.deploy("Hello world");
-  console.log(greeter.value)
-  
-  catClickerContract.value = await catContract.deploy();
-  console.log(catClickerContract.value)
+  greeter.value = new ethers.Contract(import.meta.env.VITE_GREETER_ADDRESS, greeterJSON.abi, provider.getSigner());
+  catClickerContract.value = new ethers.Contract(import.meta.env.VITE_CAT_CLICKER_ADDRESS, CatJSON.abi, provider.getSigner()); 
 }
 
 initContract();

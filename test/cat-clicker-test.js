@@ -8,8 +8,8 @@ describe("Cat clicker", function () {
     await clicker.deployed();
   
 
-    expect(await clicker.createRamdomCat("sheercat", "http://wallpapercave.com/wp/TxarQV1.jpg"));
-    expect(await clicker.createRamdomCat("sheercat", "http://wallpapercave.com/wp/TxarQV1.jpg"));
+    expect(await clicker.createRandomCat("sheercat", "http://wallpapercave.com/wp/TxarQV1.jpg"));
+    expect(await clicker.createRandomCat("sheercat", "http://wallpapercave.com/wp/TxarQV1.jpg"));
     expect((await clicker.getCats()).length).to.equal(2);
   });
 });
