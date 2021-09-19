@@ -12,7 +12,11 @@
   "devDependencies": {
     "@vitejs/plugin-vue": "^1.6.1",
     "@vue/compiler-sfc": "^3.2.12",
+    "autoprefixer": "^10.3.4",
+    "daisyui": "^1.14.0",
     "ethers": "^5.4.7",
+    "postcss": "^8.3.6",
+    "tailwindcss": "^2.2.15",
     "vite": "^2.5.4",
     "web3": "^1.5.2"
   }

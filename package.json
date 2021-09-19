@@ -7,7 +7,7 @@
     "test": "npx hardhat test",
     "compile": "npx hardhat compile",
     "serve": "npx hardhat node",
-    "run": "npx hardhat run scripts/sample-script.js --network localhost"
+    "deploy": "npx hardhat run scripts/sample-script.js --network localhost"
   },
   "author": "",
   "license": "ISC",
