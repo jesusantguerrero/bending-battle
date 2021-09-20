@@ -2,8 +2,9 @@
 import { ethers } from "ethers";
 import CatClicker from "./CatClicker/Index.vue"
 import {  reactive, computed, ref } from "vue";
-import greeterJSON from "../../../artifacts/contracts/Greeter.sol/Greeter.json";
+import avatarJSON from "../../../artifacts/contracts/AvatarBending.sol/AvatarBending.json";
 import CatJSON from "../../../artifacts/contracts/Clicker.sol/Clicker.json";
+import AvatarBending from "./AvatarBending/Index.vue";
 const provider = new ethers.providers.WebSocketProvider("ws://localhost:8545")
 
 const tabsState = reactive({
@@ -29,12 +30,12 @@ const getAccounts = async () => {
 }
 
 //  Contracts
-const greeter = ref(null);
 const catClickerContract = ref(null);
+const avatarContract = ref(null);
 
 const initContract = async () => {
-  greeter.value = new ethers.Contract(import.meta.env.VITE_GREETER_ADDRESS, greeterJSON.abi, provider.getSigner());
   catClickerContract.value = new ethers.Contract(import.meta.env.VITE_CAT_CLICKER_ADDRESS, CatJSON.abi, provider.getSigner()); 
+  avatarContract.value = new ethers.Contract(import.meta.env.VITE_AVATAR_ADDRESS, avatarJSON.abi, provider.getSigner()); 
 }
 
 initContract();
@@ -58,9 +59,7 @@ getAccounts();
     </div>
   </div>
 
-  <CatClicker :contract="catClickerContract" />
-
-  <div class="flex justify-center mt-5">
+  <div class="flex flex-col items-center justify-center mt-5">
     <div class="text-center tabs">
       <a 
         class="tab tab-bordered" 
@@ -70,6 +69,11 @@ getAccounts();
       >
         {{ tab }}
         </a> 
+    </div>
+
+    <div v-if="tabsState.current == 'Assets'" class="mt-5">
+      <CatClicker :contract="catClickerContract"  />
+      <AvatarBending :contract="avatarContract" msg="Avatar Bender" />
     </div>
   </div>
 </template>

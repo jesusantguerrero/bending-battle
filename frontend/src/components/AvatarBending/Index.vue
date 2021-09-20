@@ -15,27 +15,29 @@ const props = defineProps({
 });
 
 const state = reactive({
-    cats: [],
+    benders: [],
     admin: false,
-    toggleButtonText: computed(() => state.admin ? "Back to List" : "Add new cat")
+    toggleButtonText: computed(() => state.admin ? "Back to List" : "Create bender")
 });
 
-const updateCats = async () => {
-    state.cats = await props.contract.getCats();
+const updateBenders = async () => {
+    state.benders = await props.contract.getBenders();
 }
 
-const incrementCat = async (cat) => {
-    await props.contract.updateClick(cat);
-    updateCats();
+const attack = async (bender) => {
+    await props.contract.sendAttack(bender).catch((err) => {
+        alert("Can't attack yet");
+    });
+    updateBenders();
 }
 
-updateCats();
+updateBenders();
 </script>
 
 <template>
 <h1 class="mb-5 text-2xl font-bold text-primary"> {{ msg }} </h1>
-<Admin :contract="contract" v-if="state.admin" @cat-added="updateCats" />
-<List v-else :cats="state.cats" @click="incrementCat" />
+<Admin :contract="contract" v-if="state.admin" @created="updateBenders" />
+<List v-else :benders="state.benders" @attack="attack" />
 <button class="mt-5 btn btn-primary" @click="state.admin = !state.admin"> 
     {{ state.toggleButtonText }}
 </button>
