@@ -21,8 +21,7 @@ describe("Cat clicker", function () {
 
     expect(await clicker.createRandomCat("sheercat", "http://wallpapercave.com/wp/TxarQV1.jpg"));
     await clicker.updateClick(0)
-    await clicker.updateClick(0)
     const cat = (await clicker.getCats())[0];
-    expect(cat.clicks).to.equal(2);
+    expect(cat.clicks).to.equal(1);
   });
 });
