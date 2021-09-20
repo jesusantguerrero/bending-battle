@@ -8,18 +8,21 @@ contract CatClicker {
     
     uint dnaDigits = 16;
     uint dnaModulus = 10 ** dnaDigits;
+    uint cooldownTime = 1 minutes; 
 
     struct Cat {
         string name;
         uint dna;
         uint clicks;
         string url;
+        uint32 level;
+        uint32 readyAt;
     }
 
     Cat[] public cats;
 
     function _createCat(string memory _name, uint _dna, string memory _url) internal {
-        cats.push(Cat(_name, _dna, 0, _url));
+        cats.push(Cat(_name, _dna, 0, _url, 1, uint32(block.timestamp)));
         uint catId = cats.length - 1;
         emit NewCat(catId, _name, _dna, _url);
     }
