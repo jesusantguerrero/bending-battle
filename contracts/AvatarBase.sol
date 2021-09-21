@@ -2,8 +2,9 @@
 pragma solidity ^0.8.0;
 
 import "hardhat/console.sol";
+import "./Ownable.sol";
 
-contract AvatarBase {
+contract AvatarBase is Ownable {
     
     uint dnaDigits = 16;
     uint dnaModulus = 10 ** dnaDigits;
@@ -29,14 +30,21 @@ contract AvatarBase {
         uint experience;
         string element;
         Attack attack;
+        uint16 wins;
+        uint16 losses;
     }
 
     Person[] public benders;
     mapping (uint => address) public benderToOwner;
     mapping (address => uint) ownerBendersCount;
 
+    modifier ownerOf(uint _benderId) {
+        require(msg.sender == benderToOwner[_benderId]);
+        _;
+    }
+
     function _createBender(string memory _name, uint _dna, string memory _element) internal {
-        benders.push(Person(_name, 100, 1, uint32(block.timestamp), _dna, 100, 0, _element, _generateRandomAttack(_element)));
+        benders.push(Person(_name, 100, 1, uint32(block.timestamp), _dna, 100, 0, _element, _generateRandomAttack(_element), 0, 0));
         uint benderId = benders.length - 1;
         benderToOwner[benderId] = msg.sender;
         ownerBendersCount[msg.sender]++;
