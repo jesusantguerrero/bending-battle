@@ -8,6 +8,10 @@ const props = defineProps({
         type: Object,
         required: true
     },
+    account: {
+        type: Object,
+        required: true
+    },
     msg: {
         type: String,
         default: "Crypto Cat Clicker"
@@ -17,6 +21,7 @@ const props = defineProps({
 const state = reactive({
     benders: [],
     admin: false,
+    enemyId: null,
     toggleButtonText: computed(() => state.admin ? "Back to List" : "Create bender")
 });
 
@@ -25,10 +30,18 @@ const updateBenders = async () => {
 }
 
 const attack = async (bender) => {
-    await props.contract.sendAttack(bender).catch((err) => {
+    if(state.enemyId == null) {
+        return alert('Should select an enemy first')
+    }
+    await props.contract.fight(bender, state.enemyId).catch((err) => {
         alert("Can't attack yet");
     });
+    state.enemyId = null;
     updateBenders();
+}
+
+const setEnemy = (enemyId) => {
+    state.enemyId = enemyId == state.enemyId ? null : enemyId;
 }
 
 updateBenders();
@@ -36,8 +49,8 @@ updateBenders();
 
 <template>
 <h1 class="mb-5 text-2xl font-bold text-primary"> {{ msg }} </h1>
-<Admin :contract="contract" v-if="state.admin" @created="updateBenders" />
-<List v-else :benders="state.benders" @attack="attack" />
+<Admin :contract="contract" v-if="state.admin" @created="updateBenders" :account="account" />
+<List v-else :benders="state.benders" @attack="attack" @select="setEnemy" :selected="state.enemyId" />
 <button class="mt-5 btn btn-primary" @click="state.admin = !state.admin"> 
     {{ state.toggleButtonText }}
 </button>

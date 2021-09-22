@@ -1,17 +1,12 @@
 <script setup>
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
-import HelloWorld from './components/HelloWorld.vue'
+import Bender from './components/Bender.vue'
 </script>
 
 <template>
 <main>
-  <div class="avatar">
-    <div class="w-24 h-24 mb-8 rounded-btn">
-      <img alt="Vue logo" src="./assets/logo.png" />
-    </div>
-  </div>
-  <HelloWorld msg="Hello Vue 3 + Vite" />
+  <Bender />
 </main>
 </template>
 

@@ -5,6 +5,10 @@ defineProps({
     benders: {
         type: Array,
         required: true,
+    },
+    selected: {
+        type: [Number, null],
+        default: null
     }
 });
 </script>
@@ -16,6 +20,9 @@ defineProps({
             :name="bender.name" 
             :element="bender.element"
             :bender="bender"
+            :is-selected="selected == index"
+            class="cursor-pointer"
+            @click="$emit('select', index)"
             @attack="$emit('attack', index)"
         />
     </div>
