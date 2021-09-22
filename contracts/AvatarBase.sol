@@ -32,6 +32,7 @@ contract AvatarBase is Ownable {
         Attack attack;
         uint16 wins;
         uint16 losses;
+        uint16 points;
     }
 
     Person[] public benders;
@@ -44,12 +45,11 @@ contract AvatarBase is Ownable {
     }
 
     function _createBender(string memory _name, uint _dna, string memory _element) internal {
-        benders.push(Person(_name, 100, 1, uint32(block.timestamp), _dna, 100, 0, _element, _generateRandomAttack(_element), 0, 0));
+        benders.push(Person(_name, 100, 1, uint32(block.timestamp), _dna, 100, 0, _element, _generateRandomAttack(_element), 0, 0, 0));
         uint benderId = benders.length - 1;
         benderToOwner[benderId] = msg.sender;
         ownerBendersCount[msg.sender]++;
     }
-
     
     function _generateRandomDna(string memory _str) private view returns (uint) {
         uint rand = uint(keccak256(abi.encodePacked(_str)));

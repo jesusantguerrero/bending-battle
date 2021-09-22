@@ -42,16 +42,24 @@ contract AvatarBending is AvatarBase {
         Person storage target = benders[_targetId];
         require(_isReady(myBender), "Bender is not ready");
         uint myAttack = sendAttack(myBender, target);
-        uint enemyAttach = sendAttack(target, myBender);
+        uint enemyAttack = sendAttack(target, myBender);
+        myAttack += sendAttack(myBender, target);
+        enemyAttack += sendAttack(target, myBender);
+        myAttack += sendAttack(myBender, target);
+        enemyAttack += sendAttack(target, myBender);
 
-        if (myAttack > enemyAttach) {
+        if (myAttack > enemyAttack) {
             myBender.level++;
             myBender.wins++;
+            myBender.points+=uint16(myAttack);
             target.losses++;
         } else {
             myBender.losses++;
+            target.points+=uint16(enemyAttack);
             target.wins++;            
         }
+        myBender.experience+=myAttack;
+        target.experience+=enemyAttack;
         _triggerCoolDown(myBender);
     }
 }
