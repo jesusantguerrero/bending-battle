@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 import {  reactive, computed, ref, watch } from "vue";
 import avatarJSON from "../../../artifacts/contracts/AvatarBending.sol/AvatarBending.json";
 import AvatarBending from "./AvatarBending/Index.vue";
+import BendingHeader from "./BendingHeader.vue";
 const provider = new ethers.providers.WebSocketProvider("ws://localhost:8545")
 
 const tabsState = reactive({
@@ -15,7 +16,9 @@ const state = reactive({
   accounts: [],
   selectedAccount: null,
   greet: "",
-  formattedBalance: computed(() => ethers.utils.formatEther(state.balance)),
+  formattedBalance: computed(() => 
+    Number(ethers.utils.formatEther(state.balance)).toFixed(4)
+  ),
   currency: 'ETH',
 })
 
@@ -46,20 +49,16 @@ getAccounts();
 </script>
 
 <template>
-    <h4 class="mb-2 font-bold text-primary"> Accounts </h4>
-    <div class="py-2">
-      <select  v-model="state.selectedAccount">
-        <option v-for="account in state.accounts" :value="account">
-        {{ account }}
-        </option>
-      </select>
-    </div>
-    <h4 class="mb-2 font-bold text-primary"> Balance </h4>
-    <h1 class="text-4xl"> {{ state.formattedBalance }} {{ state.currency }}</h1>
+  <BendingHeader
+    :balance="state.formattedBalance"
+    :currency="state.currency"
+    :accounts="state.accounts"
+    v-model="state.selectedAccount"
+  />
 
-    <div class="flex flex-col items-center justify-center mt-5">
-      <div v-if="avatarContract" class="mt-5 mb-10">
-        <AvatarBending :contract="avatarContract" msg="Avatar Bender" />
+    <div class="flex flex-col items-center justify-center mt-10">
+      <div v-if="avatarContract" class="mt-40 mb-10">
+        <AvatarBending :contract="avatarContract" msg="" />
       </div>
     </div>
 </template>

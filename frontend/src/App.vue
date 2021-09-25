@@ -19,4 +19,8 @@ import Bender from './components/Bender.vue'
   color: #2c3e50;
   margin-top: 60px;
 }
+
+html {
+  background-image: url('/battle.jpg');
+}
 </style>
