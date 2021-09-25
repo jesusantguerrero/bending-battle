@@ -1,6 +1,6 @@
 <script setup>
 defineProps({
-    selectedAccount: {
+    modelValue: {
         type: Object,
         required: true
     },
@@ -27,7 +27,7 @@ defineProps({
         </div>
         <div>
         <h4 class="mb-2 font-bold text-primary"> Account </h4>
-        <select  :modelValue="selectedAccount" @change="$emit('update:modelValue', $event)">
+        <select :modelValue="selectedAccount" @change="$emit('update:modelValue', $event.target.value)">
             <option v-for="account in accounts" :value="account">
             {{ account.slice(0, 10) }}
             </option>
