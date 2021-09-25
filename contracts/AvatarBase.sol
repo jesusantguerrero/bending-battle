@@ -39,7 +39,7 @@ contract AvatarBase is Ownable {
     mapping (uint => address) public benderToOwner;
     mapping (address => uint) ownerBendersCount;
 
-    modifier ownerOf(uint _benderId) {
+    modifier onlyOwnerOf(uint _benderId) {
         require(msg.sender == benderToOwner[_benderId]);
         _;
     }
