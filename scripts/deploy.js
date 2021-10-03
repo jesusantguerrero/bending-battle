@@ -1,7 +1,7 @@
 const { deployContract } = require('./deploy-contract');
 
 async function main() {
-  await deployContract("AvatarOwnership");
+  await deployContract("BenderOwnership");
 }
 
 main()
