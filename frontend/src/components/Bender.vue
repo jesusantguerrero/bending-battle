@@ -15,7 +15,8 @@ const state = reactive({
   balance: 0,
   accounts: [],
   selectedAccount: null,
-  greet: "",
+  mode: "dashboard",
+  modes: ['dashboard', 'battle', 'market'],
   formattedBalance: computed(() => 
     Number(ethers.utils.formatEther(state.balance)).toFixed(4)
   ),
@@ -53,12 +54,20 @@ getAccounts();
     :balance="state.formattedBalance"
     :currency="state.currency"
     :accounts="state.accounts"
+    :selectedMode="state.mode"
+    :modes="state.modes"
+    @set-mode="state.mode = $event"
     v-model="state.selectedAccount"
   />
 
     <div class="flex flex-col items-center justify-center mt-10">
       <div v-if="avatarContract" class="mt-40 mb-10">
-        <AvatarBending :contract="avatarContract" msg="" />
+        <AvatarBending 
+          :contract="avatarContract"  
+          :account="state.selectedAccount"
+          :mode="state.mode"
+          msg=""
+        />
       </div>
     </div>
 </template>

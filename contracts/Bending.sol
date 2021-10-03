@@ -63,4 +63,16 @@ contract Bending is BenderBase {
         target.experience+=enemyAttack;
         _triggerCoolDown(myBender);
     }
+
+    function getBendersByOwner(address _owner) external view returns (uint[] memory) {
+        uint[] memory bendersByOwner = new uint[](ownerBendersCount[_owner]);
+        uint counter = 0;
+        for (uint i = 0; i < benders.length; i++) {
+            if (benderToOwner[i] == _owner) {
+                bendersByOwner[counter] = i;
+                counter++;
+            }
+        }
+        return bendersByOwner;
+    }
 }
