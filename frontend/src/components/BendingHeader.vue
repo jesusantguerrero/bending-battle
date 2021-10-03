@@ -22,11 +22,11 @@ defineProps({
 <template>
   <div class="fixed top-0 flex justify-around w-full h-10 mx-auto transform bg-header">
     <div class="rounded-md h-36 w-36">
-        <div class="w-full h-full mt-2 text-white bg-red-500 rounded-badge">
-            Hola
+        <div class="w-full h-full mt-2 text-white bg-fire-map rounded-badge">
+            
         </div>
         <div>
-        <h4 class="mb-2 font-bold text-primary"> Account </h4>
+        <h4 class="mb-2 font-bold text-white"> Account </h4>
         <select :modelValue="selectedAccount" @change="$emit('update:modelValue', $event.target.value)">
             <option v-for="account in accounts" :value="account">
             {{ account.slice(0, 10) }}
@@ -36,11 +36,11 @@ defineProps({
         
         </div>
     </div>
-    <div class="w-8/12 h-full py-2 font-bold text-white rounded-b-full bg-fire-500">
+    <div class="w-8/12 h-full py-2 font-bold text-white border-2 border-t-0 rounded-b-full shadow-lg bg-fire-map-500 border-fire">
       Bending Battle
     </div>
-    <div class="mt-2 bg-red-500 h-36 w-36">
-    
+    <div class="flex items-center justify-center mt-2 text-4xl font-bold text-white border-4 border-white rounded-full cursor-pointer bg-fire-map h-36 w-36">
+        Menu
     </div>
   </div>
 </template>

@@ -7,7 +7,7 @@
     "test": "npx hardhat test",
     "compile": "npx hardhat compile",
     "serve": "npx hardhat node",
-    "deploy": "npx hardhat run scripts/sample-script.js --network localhost",
+    "deploy": "npx hardhat run scripts/deploy.js --network localhost",
     "dev": "npm run client:dev",
     "client:dev": "cd frontend && npm run dev"
   },

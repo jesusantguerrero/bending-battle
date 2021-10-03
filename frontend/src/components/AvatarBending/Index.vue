@@ -44,6 +44,10 @@ const setEnemy = (enemyId) => {
     state.enemyId = enemyId == state.enemyId ? null : enemyId;
 }
 
+const getMyBenders = () => {
+    return state.benders.filter(b => b.owner == props.account.address);
+}
+
 updateBenders();
 </script>
 

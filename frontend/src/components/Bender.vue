@@ -1,7 +1,7 @@
 <script setup>
 import { ethers } from "ethers";
 import {  reactive, computed, ref, watch } from "vue";
-import avatarJSON from "../../../artifacts/contracts/AvatarBending.sol/AvatarBending.json";
+import avatarJSON from "../../../artifacts/contracts/BenderOwnership.sol/BenderOwnership.json";
 import AvatarBending from "./AvatarBending/Index.vue";
 import BendingHeader from "./BendingHeader.vue";
 const provider = new ethers.providers.WebSocketProvider("ws://localhost:8545")
