@@ -2,9 +2,9 @@
 pragma solidity ^0.8.0;
 
 import "hardhat/console.sol";
-import "./AvatarBase.sol";
+import "./BenderBase.sol";
 
-contract AvatarBending is AvatarBase {
+contract Bending is BenderBase {
     uint256 levelUpFee = 0.001 ether; 
     uint randNonce = 0;
     uint bonusLevel = 5;

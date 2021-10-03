@@ -3,9 +3,9 @@ pragma solidity ^0.8.0;
 
 import "hardhat/console.sol";
 import "./Erc721.sol";
-import "./AvatarBending.sol";
+import "./Bending.sol";
 
-contract AvatarOwnership is AvatarBending, ERC721 {
+contract BenderOwnership is Bending, ERC721 {
     mapping(uint256 => address) bendersApprovals;
 
     function balanceOf(address _owner)
