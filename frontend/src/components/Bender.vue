@@ -1,10 +1,11 @@
 <script setup>
 import { ethers } from "ethers";
-import {  reactive, computed, ref, watch } from "vue";
-import avatarJSON from "../../../artifacts/contracts/BenderOwnership.sol/BenderOwnership.json";
+import {  reactive, computed, ref, watch, onMounted } from "vue";
+import BENDER from "../../../artifacts/contracts/BenderOwnership.sol/BenderOwnership.json";
+import config from "../../config";
 import AvatarBending from "./AvatarBending/Index.vue";
 import BendingHeader from "./BendingHeader.vue";
-const provider = new ethers.providers.WebSocketProvider("ws://localhost:8545")
+const provider = ref(null)
 
 const tabsState = reactive({
   current: "Assets",
@@ -24,11 +25,11 @@ const state = reactive({
 })
 
 const getBalance = async (address) => {
-  state.balance = await provider.getBalance(address);
+  state.balance = await provider.value.getBalance(address);
 }
 
 const getAccounts = async () => {
-  state.accounts = await provider.listAccounts();
+  state.accounts = await provider.value.listAccounts();
   state.selectedAccount = state.accounts[0];
 }
 
@@ -40,17 +41,21 @@ watch(() => state.selectedAccount, () => {
 }, { immediate: true });
 
 //  Contracts
-const avatarContract = ref(null);
+const benderContract = ref(null);
 
 const initContract = async () => {
-  avatarContract.value = new ethers.Contract(import.meta.env.VITE_AVATAR_ADDRESS, avatarJSON.abi, provider.getSigner(state.selectedAccount)); 
+  benderContract.value = new ethers.Contract(config.bendingAddress, BENDER.abi, provider.value); 
 }
 
-getAccounts();
+onMounted(async () => {
+  provider.value = new ethers.providers.Web3Provider(window.ethereum, "any");
+  getAccounts();
+})
 </script>
 
 <template>
   <BendingHeader
+    v-if="state.selectedAccount"
     :balance="state.formattedBalance"
     :currency="state.currency"
     :accounts="state.accounts"
@@ -61,9 +66,9 @@ getAccounts();
   />
 
     <div class="flex flex-col items-center justify-center mt-10">
-      <div v-if="avatarContract" class="mt-40 mb-10">
+      <div v-if="benderContract" class="mt-40 mb-10">
         <AvatarBending 
-          :contract="avatarContract"  
+          :contract="benderContract"  
           :account="state.selectedAccount"
           :mode="state.mode"
           msg=""

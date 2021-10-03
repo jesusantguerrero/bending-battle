@@ -3,7 +3,7 @@ import { ref } from "vue";
 
 defineProps({
     modelValue: {
-        type: Object,
+        type: String,
         required: true
     },
     accounts: {
@@ -11,7 +11,7 @@ defineProps({
         required: true
     },
     balance: {
-        type: Number,
+        type: [Number, String],
         required: true
     },
     currency: {
@@ -42,7 +42,7 @@ const setMode = (mode) => {
         </div>
         <div>
         <h4 class="mb-2 font-bold text-white"> Account </h4>
-        <select :modelValue="selectedAccount" @change="$emit('update:modelValue', $event.target.value)">
+        <select :modelValue="modelValue" @change="$emit('update:modelValue', $event.target.value)">
             <option v-for="account in accounts" :value="account">
             {{ account.slice(0, 10) }}
             </option>
