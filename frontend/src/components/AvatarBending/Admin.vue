@@ -26,7 +26,6 @@ const clearForm = () => {
 
 const { contract } = toRefs(props);
 const createBender = async () => {
-    debugger;
     const trx = await contract.value.createRandomBender(form.name, form.element).catch(err => {
         alert(err.message);
     });

@@ -5,7 +5,7 @@ describe("Crypto avatar: the last crypto bender", function () {
   let avatar = null;
   let owner, user2;
   beforeEach(async function () {
-    const Avatar = await ethers.getContractFactory("AvatarBending");
+    const Avatar = await ethers.getContractFactory("BenderOwnership");
     avatar = await Avatar.deploy();
     [owner, user2] = await ethers.getSigners();
   });

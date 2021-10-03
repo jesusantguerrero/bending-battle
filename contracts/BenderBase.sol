@@ -2,9 +2,9 @@
 pragma solidity ^0.8.0;
 
 import "hardhat/console.sol";
-import "./Ownable.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract AvatarBase is Ownable {
+contract BenderBase is Ownable {
     
     uint dnaDigits = 16;
     uint dnaModulus = 10 ** dnaDigits;
@@ -39,7 +39,7 @@ contract AvatarBase is Ownable {
     mapping (uint => address) public benderToOwner;
     mapping (address => uint) ownerBendersCount;
 
-    modifier ownerOf(uint _benderId) {
+    modifier onlyOwnerOf(uint _benderId) {
         require(msg.sender == benderToOwner[_benderId]);
         _;
     }
