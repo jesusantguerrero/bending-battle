@@ -3,9 +3,11 @@ pragma solidity ^0.8.0;
 
 import "hardhat/console.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
 
 contract BenderBase is Ownable {
-    
+    using Counters for Counters.Counter;
+    Counters.Counter private _tokenIds;
     uint dnaDigits = 16;
     uint dnaModulus = 10 ** dnaDigits;
     uint cooldownTime = 1 minutes; 
@@ -19,14 +21,14 @@ contract BenderBase is Ownable {
         uint32 cost;      
     }
 
-    struct Person {
+    struct Bender {
+        uint tokenId;
+        uint health;
+        uint experience;
         string name;
         uint32 chi;
         uint32 level;
         uint32 readyAt;
-        uint dna;
-        uint health;
-        uint experience;
         string element;
         Attack attack;
         uint16 wins;
@@ -34,7 +36,7 @@ contract BenderBase is Ownable {
         uint16 points;
     }
 
-    Person[] public benders;
+    Bender[] public benders;
     mapping (uint => address) public benderToOwner;
     mapping (address => uint) ownerBendersCount;
 
@@ -43,29 +45,29 @@ contract BenderBase is Ownable {
         _;
     }
 
-    function _createBender(string memory _name, uint _dna, string memory _element) internal {
-        benders.push(Person(_name, 100, 1, uint32(block.timestamp), _dna, 100, 0, _element, _generateRandomAttack(_element), 0, 0, 0));
-        uint benderId = benders.length - 1;
+    function _createBender(string memory _name, string memory _element) internal {
+        uint benderId = _tokenIds.current();
+        benders.push(Bender(benderId, 100, 0, _name, 100, 1, uint32(block.timestamp), _element, _generateRandomAttack(_element), 0, 0, 0));
         benderToOwner[benderId] = msg.sender;
         ownerBendersCount[msg.sender]++;
+        _tokenIds.increment();
     }
-    
-    function _generateRandomDna(string memory _str) private view returns (uint) {
-        uint rand = uint(keccak256(abi.encodePacked(_str)));
-        return rand % dnaModulus;
-    }
+
 
     function _generateRandomAttack(string memory _element) private pure returns (Attack memory) {
         return Attack(5, 1, 1, "Attack of ", _element, 1);
     }
 
-    function createRandomBender(string memory _name, string memory _element) public {
-        require(ownerBendersCount[msg.sender] == 0, "You can't create more than 1 bender");
-        uint randDna = _generateRandomDna(_name);
-        _createBender(_name, randDna, _element);
+    function mintBender(string memory _name, string memory _element) external onlyOwner {
+        _createBender(_name, _element);
     }
 
-    function getBenders() public view returns (Person[] memory) {
+    function createRandomBender(string memory _name, string memory _element) public {
+        require(ownerBendersCount[msg.sender] == 0, "You can't create more than 1 bender");
+        _createBender(_name, _element);
+    }
+
+    function getBenders() public view returns (Bender[] memory) {
         return benders;
     }
 }
