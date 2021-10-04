@@ -10,7 +10,7 @@ const props = defineProps({
         required: true
     },
     account: {
-        type: Object,
+        type: String,
         required: true
     },
     msg: {
@@ -40,8 +40,12 @@ const state = reactive({
 });
 
 const updateBenders = async () => {
-    state.myBendersIndexes = await props.contract.getBendersByOwner(props.account);
-    state.benders = await props.contract.getBenders();
+    try {
+        state.myBendersIndexes = await props.contract.getBendersByOwner(props.account);
+        state.benders = await props.contract.getBenders();
+    } catch (e) {
+        console.dir(e);
+    }
 }
 
 const attack = async (bender) => {
@@ -50,6 +54,7 @@ const attack = async (bender) => {
     }
     await props.contract.fight(bender, state.enemyId).catch((err) => {
         alert("Can't attack yet");
+        console.log(err);
     });
     state.enemyId = null;
     updateBenders();
@@ -70,7 +75,11 @@ watch(() => props.account, () => {
     <List :benders="state.myBenders" @attack="attack" :class="{'mr-20': state.isBattle}" />
     <List v-if="state.isBattle" :benders="state.enemies" @select="setEnemy" :selected="state.enemyId" />
 </div>
-<button class="mt-5 btn btn-primary" @click="state.admin = !state.admin" v-if="!state.isBattle && !state.hasBenders"> 
+<button 
+    v-if="state.admin || (!state.isBattle && !state.hasBenders)"
+    class="mt-5 btn btn-primary" 
+    @click="state.admin = !state.admin" 
+>
     {{ state.toggleButtonText }}
 </button>
 

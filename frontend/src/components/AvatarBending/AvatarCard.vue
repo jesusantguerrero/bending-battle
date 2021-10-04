@@ -34,6 +34,7 @@
 
 <script setup>
 import { computed } from "@vue/reactivity";
+import { useTimeAgo } from "@vueuse/core";
 
 const props = defineProps({
         name: {
@@ -106,6 +107,6 @@ const props = defineProps({
 
     const nextAttackAt = computed(() => {
        const date = new Date(props.bender.readyAt);
-        return date.toLocaleString();
+        return useTimeAgo(date);
     })
 </script>

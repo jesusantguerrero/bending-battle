@@ -9,7 +9,6 @@ contract BenderBase is Ownable {
     uint dnaDigits = 16;
     uint dnaModulus = 10 ** dnaDigits;
     uint cooldownTime = 1 minutes; 
-   
     
     struct Attack {
         uint32 maxDamage;

@@ -44,10 +44,6 @@ contract Bending is BenderBase {
         require(_isReady(myBender), "Bender is not ready");
         uint myAttack = sendAttack(myBender, target);
         uint enemyAttack = sendAttack(target, myBender);
-        myAttack += sendAttack(myBender, target);
-        enemyAttack += sendAttack(target, myBender);
-        myAttack += sendAttack(myBender, target);
-        enemyAttack += sendAttack(target, myBender);
 
         if (myAttack > enemyAttack) {
             myBender.level++;
@@ -63,7 +59,7 @@ contract Bending is BenderBase {
         target.experience+=enemyAttack;
         _triggerCoolDown(myBender);
     }
-
+    
     function getBendersByOwner(address _owner) external view returns (uint[] memory) {
         uint[] memory bendersByOwner = new uint[](ownerBendersCount[_owner]);
         uint counter = 0;

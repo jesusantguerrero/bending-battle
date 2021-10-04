@@ -27,5 +27,15 @@ describe("Crypto avatar: the last crypto bender", function () {
     const benders = await avatar.getBenders();
     expect(benders.length).to.equal(2);
     expect(benders.map(bender => bender.wins).sort()).to.deep.equal([0, 1]);
+  });
+
+  it("Should get benders by owner", async () => {
+    await avatar.deployed();
+
+    await avatar.createRandomBender("Aang", "air");
+    await avatar.connect(user2).createRandomBender("Sokka", "fire");
+
+    const ownedByMe = await avatar.getBendersByOwner(owner.address);
+    expect(ownedByMe.length).to.equal(1);
   })
 });

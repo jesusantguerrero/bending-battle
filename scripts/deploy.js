@@ -1,7 +1,7 @@
 const { deployContract } = require('./deploy-contract');
 
 async function main() {
-  await deployContract("BenderOwnership");
+  await deployContract("BenderOwnership", null, "VITE_BENDING_ADDRESS");
 }
 
 main()
