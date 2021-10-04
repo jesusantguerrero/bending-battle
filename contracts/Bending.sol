@@ -5,10 +5,12 @@ import "hardhat/console.sol";
 import "./BenderBase.sol";
 
 contract Bending is BenderBase {
+    event AttackAction(string benderName, uint256 damage, string message);
+    event FightResult(uint damage, uint damageReceived, string winner);
     uint256 levelUpFee = 0.001 ether; 
     uint randNonce = 0;
     uint bonusLevel = 5;
-    function _triggerCoolDown(Person storage _bender) internal {
+    function _triggerCoolDown(Bender storage _bender) internal {
         _bender.readyAt = uint32(block.timestamp + cooldownTime);
     }
 
@@ -21,7 +23,7 @@ contract Bending is BenderBase {
         levelUpFee = _fee;
     }
 
-    function _isReady(Person storage _bender) internal view returns (bool) {
+    function _isReady(Bender storage _bender) internal view returns (bool) {
         return (_bender.readyAt <= block.timestamp);
     }
 
@@ -30,7 +32,7 @@ contract Bending is BenderBase {
         return uint(keccak256(abi.encodePacked(block.timestamp, msg.sender, randNonce))) % _modulus;
     }
 
-    function sendAttack(Person storage _bender, Person storage _enemy) internal returns(uint) {
+    function sendAttack(Bender storage _bender, Bender storage _enemy) internal returns(uint) {
         uint damage = randMod(_bender.attack.maxDamage + (_bender.level * bonusLevel));
         _bender.health -= _bender.attack.cost;
         _bender.chi -= _bender.attack.cost;
@@ -39,18 +41,20 @@ contract Bending is BenderBase {
     }
 
     function fight(uint _benderId, uint _targetId) public onlyOwnerOf(_benderId) {
-        Person storage myBender = benders[_benderId];
-        Person storage target = benders[_targetId];
+        Bender storage myBender = benders[_benderId];
+        Bender storage target = benders[_targetId];
         require(_isReady(myBender), "Bender is not ready");
         uint myAttack = sendAttack(myBender, target);
         uint enemyAttack = sendAttack(target, myBender);
-
+        string memory winner;
         if (myAttack > enemyAttack) {
             myBender.level++;
             myBender.wins++;
             myBender.points+=uint16(myAttack);
             target.losses++;
+            winner = myBender.name;
         } else {
+            winner = target.name;
             myBender.losses++;
             target.points+=uint16(enemyAttack);
             target.wins++;            
@@ -58,6 +62,9 @@ contract Bending is BenderBase {
         myBender.experience+=myAttack;
         target.experience+=enemyAttack;
         _triggerCoolDown(myBender);
+        emit AttackAction(myBender.name, myAttack, myBender.attack.name);
+        emit AttackAction(target.name, enemyAttack, target.attack.name);
+        emit FightResult(myAttack, enemyAttack, winner);
     }
     
     function getBendersByOwner(address _owner) external view returns (uint[] memory) {

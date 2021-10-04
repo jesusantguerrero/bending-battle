@@ -29,7 +29,7 @@ const createBender = async () => {
     const trx = await contract.value.createRandomBender(form.name, form.element).catch(err => {
         alert(err.message);
     });
-    trx.wait();
+    await trx.wait();
     emit('created');
     clearForm();
 }
