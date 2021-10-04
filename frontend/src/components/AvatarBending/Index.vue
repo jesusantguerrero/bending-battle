@@ -1,8 +1,9 @@
 <script setup>
 import List from "./List.vue"
 import Admin from "./admin.vue"
-import { computed, reactive } from "@vue/reactivity";
+import { computed, reactive, inject } from "vue";
 import { watch } from "@vue/runtime-core";
+import { ethers } from "ethers";
 
 const props = defineProps({
     contract: {
@@ -31,33 +32,70 @@ const state = reactive({
     myBendersIndexes: [],
     isBattle: computed(() => props.mode == 'battle'),
     hasBenders: computed(() => state.myBenders.length > 0),
-    myBenders: computed(() => state.benders.filter((_bender, index) => {
-        return state.myBendersIndexes.map(big => big.toNumber()).includes(index)
+    myBenders: computed(() => state.benders.filter((bender) => {
+        console.log(bender.tokenId.toNumber(), bender.name, state.myBendersIndexes);
+        return state.myBendersIndexes.includes(bender.tokenId.toNumber())
     })),
-    enemies: computed(() => state.benders.filter((_bender, index) => {
-        return !state.myBendersIndexes.map(big => big.toNumber()).includes(index)
+    enemies: computed(() => state.benders.filter((bender) => {
+        return !state.myBendersIndexes.includes(bender.tokenId.toNumber())
     })),
 });
 
 const updateBenders = async () => {
     try {
-        state.myBendersIndexes = await props.contract.getBendersByOwner(props.account);
+        state.myBendersIndexes = (await props.contract.getBendersByOwner(props.account)).map(big => {
+            return big.toNumber()
+        });
         state.benders = await props.contract.getBenders();
     } catch (e) {
         console.dir(e);
     }
 }
 
+const useMessage = inject('useMessage');
+const levelUp = async (bender) => {
+    let levelUpFee = '0.001';
+    levelUpFee = ethers.utils.parseEther(levelUpFee);
+    useMessage('Upgrading bender power')
+    const trx = await props.contract.levelUp(bender, { from: props.account, value: levelUpFee })
+    .catch(() => {
+        useMessage('Cant level up');
+    });
+
+    await trx.wait()
+    updateBenders();
+    useMessage('Bender upgraded');
+}
+
 const attack = async (bender) => {
     if(state.enemyId == null) {
-        return alert('Should select an enemy first')
+        useMessage('Should select an enemy first')
     }
-    await props.contract.fight(bender, state.enemyId).catch((err) => {
-        alert("Can't attack yet");
+    const trx = await props.contract.fight(bender, state.enemyId).catch((err) => {
+        useMessage('Cant attack yet');
         console.log(err);
     });
-    state.enemyId = null;
-    updateBenders();
+
+    if (trx) {
+        useMessage("The fight has started");
+        const receipt = await trx.wait().catch(() => {
+            useMessage('Error in the attack');
+        });
+
+        const eventDelay = 3000; 
+        receipt.events.forEach((event, index) => {
+            setTimeout(() => {
+                if (event.event == 'FightResult') {
+                    const { damage, damageReceived, winner } = event.args;
+                    useMessage(`${winner} won the fight. You has received ${damageReceived} and attack caused ${damage}`, eventDelay);
+                    updateBenders();
+                } else {
+                    const { benderName, damage, message } = event.args;
+                    useMessage(`${benderName} ${message} ${damage}`, eventDelay);
+                }
+            }, eventDelay * (index + 1));
+        });
+    }
 }
 
 const setEnemy = (enemyId) => {
@@ -72,7 +110,7 @@ watch(() => props.account, () => {
 <h1 class="mb-5 text-2xl font-bold text-primary"> {{ msg }} </h1>
 <Admin :contract="contract" v-if="state.admin" @created="updateBenders" :account="account" />
 <div v-else class="flex">
-    <List :benders="state.myBenders" @attack="attack" :class="{'mr-20': state.isBattle}" />
+    <List :benders="state.myBenders" @attack="attack" @levelUp="levelUp" :class="{'mr-20': state.isBattle}" />
     <List v-if="state.isBattle" :benders="state.enemies" @select="setEnemy" :selected="state.enemyId" />
 </div>
 <button 

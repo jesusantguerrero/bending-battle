@@ -9,10 +9,10 @@
             >
             </div>
         </div>
-        <h4 class="mt-2 font-bold text-white"> {{ name }} </h4>
+        <h4 class="mt-2 font-bold text-white"> {{ name }} {{ bender.tokenId }} </h4>
 
         <div class="flex flex-col items-center justify-center p-3 mt-2 bg-gray-800 rounded-md rounded-br-lg">
-            <span class="absolute top-0 left-0 flex items-center justify-center text-sm font-bold text-white rounded-tl-md w-9 h-9" :class="orbeColor">{{ bender.level }}</span>
+            <span @click="$emit('levelUp')" class="absolute top-0 left-0 flex items-center justify-center text-sm font-bold text-white rounded-tl-md w-9 h-9" :class="orbeColor">{{ bender.level }}</span>
             <span @click.stop="$emit('attack')" title="Attack" class="absolute z-40 flex items-center justify-center text-sm text-white border-2 border-white w-9 h-9 rounded-badge right-2 bottom-2" :class="[orbeColor]">
                 <i :class="bendingIcon" />
             </span>

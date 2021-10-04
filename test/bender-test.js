@@ -23,7 +23,7 @@ describe("Crypto avatar: the last crypto bender", function () {
     await avatar.createRandomBender("Aang", "air");
     await avatar.connect(user2).createRandomBender("Sokka", "fire");
 
-    await avatar.fight(0, 1);
+    await avatar.fight(1, 0);
     const benders = await avatar.getBenders();
     expect(benders.length).to.equal(2);
     expect(benders.map(bender => bender.wins).sort()).to.deep.equal([0, 1]);
