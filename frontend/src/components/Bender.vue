@@ -7,11 +7,6 @@ import AvatarBending from "./AvatarBending/Index.vue";
 import BendingHeader from "./BendingHeader.vue";
 const provider = ref(null)
 
-const tabsState = reactive({
-  current: "Assets",
-  tabs: ['Assets', 'Transactions', 'Settings'],
-});
-
 const state = reactive({
   balance: 0,
   accounts: [],
@@ -44,11 +39,28 @@ watch(() => state.selectedAccount, () => {
 const benderContract = ref(null);
 
 const initContract = async () => {
-  benderContract.value = new ethers.Contract(config.bendingAddress, BENDER.abi, provider.value); 
+  benderContract.value = new ethers.Contract(
+    config.bendingAddress, 
+    BENDER.abi, 
+    provider.value.getSigner(state.selectedAccount)
+  ); 
+}
+
+const setProvider = async (isMetamask) => {
+  if (isMetamask) {
+    const prov = new ethers.providers.Web3Provider(window.web3.currentProvider, "any");
+    provider.value = prov;
+    await provider.value.send("eth_requestAccounts", []);
+  } else {
+    provider.value = new ethers.providers.WebSocketProvider("ws://localhost:8545");
+  }
 }
 
 onMounted(async () => {
-  provider.value = new ethers.providers.Web3Provider(window.ethereum, "any");
+  setProvider(true);
+  window.ethereum.on("accountsChanged", async (event) => {
+    await getAccounts();
+  });
   getAccounts();
 })
 </script>

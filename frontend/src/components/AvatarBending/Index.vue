@@ -3,7 +3,6 @@ import List from "./List.vue"
 import Admin from "./admin.vue"
 import { computed, reactive } from "@vue/reactivity";
 import { watch } from "@vue/runtime-core";
-import { ethers } from "ethers";
 
 const props = defineProps({
     contract: {
@@ -41,8 +40,12 @@ const state = reactive({
 });
 
 const updateBenders = async () => {
-    state.myBendersIndexes = await props.contract.getBendersByOwner(account);
-    state.benders = await props.contract.getBenders();
+    try {
+        state.myBendersIndexes = await props.contract.getBendersByOwner(props.account);
+        state.benders = await props.contract.getBenders();
+    } catch (e) {
+        console.dir(e);
+    }
 }
 
 const attack = async (bender) => {
@@ -51,6 +54,7 @@ const attack = async (bender) => {
     }
     await props.contract.fight(bender, state.enemyId).catch((err) => {
         alert("Can't attack yet");
+        console.log(err);
     });
     state.enemyId = null;
     updateBenders();
