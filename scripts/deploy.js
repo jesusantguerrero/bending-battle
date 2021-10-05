@@ -1,3 +1,4 @@
+require('dotenv');
 const { deployContract } = require('./deploy-contract');
 const heroes = [
   {
@@ -13,7 +14,9 @@ const heroes = [
 }, {
   name: 'Korra',
   element: 'water'
-}]
+}];
+
+
 async function createHeroes(contract) {
   for (hero of heroes) {
     await contract.mintBender(hero.name, hero.element)

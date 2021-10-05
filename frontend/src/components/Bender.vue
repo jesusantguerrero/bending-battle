@@ -1,7 +1,6 @@
 <script setup>
 import { ethers } from "ethers";
-import {  reactive, computed, ref, watch, onMounted, provide } from "vue";
-import BENDER from "../../../artifacts/contracts/BenderOwnership.sol/BenderOwnership.json";
+import {  reactive, computed, ref, watch, onMounted } from "vue";
 import config from "../../config";
 import AvatarBending from "./AvatarBending/Index.vue";
 import BendingHeader from "./BendingHeader.vue";
@@ -42,6 +41,7 @@ watch(() => state.selectedAccount, () => {
 const benderContract = ref(null);
 
 const initContract = async () => {
+  const { BENDER } = await import(`../utils/contracts.${config.mode}.js`)
   const contract = new ethers.Contract(
     config.bendingAddress,
     BENDER.abi, 

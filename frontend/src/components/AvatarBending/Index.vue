@@ -75,7 +75,7 @@ const attack = async (bender) => {
     });
 
     if (trx) {
-        useMessage("The fight has started");
+        useMessage("The fight is about to start ...", 0);
         const receipt = await trx.wait().catch(() => {
             useMessage('Error in the attack');
         });
