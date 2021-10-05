@@ -6,6 +6,8 @@ import config from "../../config";
 import AvatarBending from "./AvatarBending/Index.vue";
 import BendingHeader from "./BendingHeader.vue";
 import MessageProvider from "./MessageProvider.vue";
+import epic from "../assets/audio/epic.mp3"
+import { useSound } from "@vueuse/sound"
 const provider = ref(null)
 
 const state = reactive({
@@ -45,7 +47,6 @@ const initContract = async () => {
     BENDER.abi, 
     provider.value.getSigner()
   );
-  console.log(contract);
   benderContract.value = contract;
 }
 
@@ -57,6 +58,12 @@ const setProvider = async (isMetamask) => {
   } else {
     provider.value = new ethers.providers.WebSocketProvider("ws://localhost:8545");
   }
+}
+
+const { play, stop } = useSound(epic);
+const toggleAudio = (mode) => {
+  const method = mode == 'play' ? play : stop;
+  method(); 
 }
 
 onMounted(async () => {
@@ -79,8 +86,10 @@ onMounted(async () => {
     :selectedMode="state.mode"
     :modes="state.modes"
     @set-mode="state.mode = $event"
+    @music="toggleAudio"
     v-model="state.selectedAccount"
   />
+  
 
   <div class="flex flex-col items-center justify-center mt-10">
     <div v-if="benderContract" class="mt-40 mb-10">
