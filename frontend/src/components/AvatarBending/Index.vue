@@ -1,6 +1,6 @@
 <script setup>
 import List from "./List.vue"
-import Admin from "./admin.vue"
+import Admin from "./Admin.vue"
 import { computed, reactive, inject } from "vue";
 import { watch } from "@vue/runtime-core";
 import { ethers } from "ethers";
