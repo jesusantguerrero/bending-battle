@@ -6,12 +6,10 @@
     "build": "vite build",
     "serve": "vite preview"
   },
-  "dependencies": {
+  "devDependencies": {
     "@vueuse/sound": "^1.1.7",
     "vue": "^3.2.12",
-    "web3modal": "^1.9.4"
-  },
-  "devDependencies": {
+    "web3modal": "^1.9.4",
     "@vitejs/plugin-vue": "^1.6.1",
     "@vue/compiler-sfc": "^3.2.12",
     "@vueuse/core": "^6.5.3",
