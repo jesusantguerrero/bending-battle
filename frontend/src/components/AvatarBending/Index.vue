@@ -33,7 +33,6 @@ const state = reactive({
     isBattle: computed(() => props.mode == 'battle'),
     hasBenders: computed(() => state.myBenders.length > 0),
     myBenders: computed(() => state.benders.filter((bender) => {
-        console.log(bender.tokenId.toNumber(), bender.name, state.myBendersIndexes);
         return state.myBendersIndexes.includes(bender.tokenId.toNumber())
     })),
     enemies: computed(() => state.benders.filter((bender) => {
@@ -73,11 +72,10 @@ const attack = async (bender) => {
     }
     const trx = await props.contract.fight(bender, state.enemyId).catch((err) => {
         useMessage('Cant attack yet');
-        console.log(err);
     });
 
     if (trx) {
-        useMessage("The fight has started");
+        useMessage("The fight is about to start ...", 0);
         const receipt = await trx.wait().catch(() => {
             useMessage('Error in the attack');
         });

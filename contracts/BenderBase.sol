@@ -8,8 +8,6 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 contract BenderBase is Ownable {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
-    uint dnaDigits = 16;
-    uint dnaModulus = 10 ** dnaDigits;
     uint cooldownTime = 1 minutes; 
     
     struct Attack {
@@ -52,7 +50,6 @@ contract BenderBase is Ownable {
         ownerBendersCount[msg.sender]++;
         _tokenIds.increment();
     }
-
 
     function _generateRandomAttack(string memory _element) private pure returns (Attack memory) {
         return Attack(5, 1, 1, "Attack of ", _element, 1);

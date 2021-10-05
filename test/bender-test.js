@@ -20,10 +20,13 @@ describe("Crypto avatar: the last crypto bender", function () {
   it("Should fight with the next bender", async () => {
     await avatar.deployed();
 
-    await avatar.createRandomBender("Aang", "air");
-    await avatar.connect(user2).createRandomBender("Sokka", "fire");
+    const trx = await avatar.createRandomBender("Aang", "air");
+    const trx2 = await avatar.connect(user2).createRandomBender("Sokka", "fire");
 
-    await avatar.fight(1, 0);
+    trx.wait();
+    trx2.wait();
+
+    await avatar.fight(0, 1);
     const benders = await avatar.getBenders();
     expect(benders.length).to.equal(2);
     expect(benders.map(bender => bender.wins).sort()).to.deep.equal([0, 1]);
