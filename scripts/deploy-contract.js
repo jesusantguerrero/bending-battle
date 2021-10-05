@@ -28,6 +28,7 @@ const deployContract = async (contractName, args = null, envName) => {
     saveEnvVar(envName, contract.address);
   }
   console.log(`${contractName} deployed to:`, contract.address);
+  return contract;
 }
 
 module.exports.deployContract = deployContract;
