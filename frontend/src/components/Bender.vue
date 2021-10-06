@@ -6,8 +6,10 @@ import AvatarBending from "./AvatarBending/Index.vue";
 import BendingHeader from "./BendingHeader.vue";
 import MessageProvider from "./MessageProvider.vue";
 import epic from "../assets/audio/epic.mp3"
+import Web3Modal, {  } from "web3modal/dist";
 import { useSound } from "@vueuse/sound"
-const provider = ref(null)
+const provider = ref(null);
+const signer = ref(null);
 
 const state = reactive({
   balance: 0,
@@ -21,6 +23,10 @@ const state = reactive({
   currency: 'ETH',
 })
 
+watch(() => state.selectedAccount, (account) => {
+  getBalance(account)
+})
+
 const getBalance = async (address) => {
   state.balance = await provider.value.getBalance(address);
 }
@@ -30,37 +36,70 @@ const getAccounts = async () => {
   state.selectedAccount = state.accounts[0];
 }
 
-watch(() => state.selectedAccount, () => {
-  if (state.selectedAccount) {
-    getBalance(state.selectedAccount);
-    initContract();
-  }
-}, { immediate: true });
-
 //  Contracts
 const benderContract = ref(null);
 
-const initContract = async () => {
+const initContract = async (signer) => {
   const { BENDER } = await import(`../utils/contracts.${config.mode}.js`)
-  const contract = new ethers.Contract(
+  benderContract.value  = new ethers.Contract(
     config.bendingAddress,
     BENDER.abi, 
-    provider.value.getSigner()
+    signer || provider.value
   );
-  benderContract.value = contract;
+  
+  if (signer) {
+    await getAccounts();
+  }
+  return benderContract;
+}
+
+const onChangeAccount = async (wallet) => {
+  provider.value = new ethers.providers.Web3Provider(wallet, "any");
+  const user = provider.value.getSigner();
+  await initContract(user)
+  signer.value = user;
+}
+
+const connectWallet = async () => {
+  const web3Modal = new Web3Modal({
+    cacheProvider: true,
+  });
+
+  const wallet = await web3Modal.connect();
+  onChangeAccount(wallet);
+  listenProviderEvents(wallet)
+}
+
+const listenProviderEvents = (walletProvider) => {
+  walletProvider.on("accountsChanged", (accounts) => {
+    onChangeAccount(walletProvider, accounts)
+  });
+
+  walletProvider.on("chainChanged", (chainId) => {
+    console.log(chainId);
+  });
+
+  walletProvider.on("connect", (info) => {
+    console.log(info);
+  });
+
+  walletProvider.on("disconnect", (error) => {
+    console.log(error);
+  });
 }
 
 const setProvider = async (isMetamask) => {
   if (isMetamask) {
-    const prov = new ethers.providers.Web3Provider(window.web3.currentProvider, "any");
-    provider.value = prov;
-    await provider.value.send("eth_requestAccounts", []);
+    provider.value = new ethers.providers.JsonRpcProvider();
   } else {
     provider.value = new ethers.providers.WebSocketProvider("ws://localhost:8545");
   }
 }
 
-const { play, stop } = useSound(epic);
+const { play, stop } = useSound(epic, { 
+  volume: 0.2
+ });
+
 const toggleAudio = (mode) => {
   const method = mode == 'play' ? play : stop;
   method(); 
@@ -68,10 +107,7 @@ const toggleAudio = (mode) => {
 
 onMounted(async () => {
   setProvider(true);
-  window.ethereum.on("accountsChanged", async (event) => {
-    await getAccounts();
-  });
-  getAccounts();
+  initContract()
 })
 
 </script>
@@ -79,7 +115,6 @@ onMounted(async () => {
 <template>
 <MessageProvider>
   <BendingHeader
-    v-if="state.selectedAccount"
     :balance="state.formattedBalance"
     :currency="state.currency"
     :accounts="state.accounts"
@@ -87,12 +122,14 @@ onMounted(async () => {
     :modes="state.modes"
     @set-mode="state.mode = $event"
     @music="toggleAudio"
+    @connectWallet="connectWallet"
     v-model="state.selectedAccount"
   />
   
+  <button class="btn btn-primary" @click="connectWallet" v-if="!signer"> Start </button>
 
   <div class="flex flex-col items-center justify-center mt-10">
-    <div v-if="benderContract" class="mt-40 mb-10">
+    <div v-if="benderContract && signer" class="mt-40 mb-10">
       <AvatarBending 
         :contract="benderContract"  
         :account="state.selectedAccount"
