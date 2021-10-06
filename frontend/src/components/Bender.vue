@@ -8,8 +8,13 @@ import MessageProvider from "./MessageProvider.vue";
 import epic from "../assets/audio/epic.mp3"
 import Web3Modal, {  } from "web3modal/dist";
 import { useSound } from "@vueuse/sound"
+const web3Modal = new Web3Modal({
+    cacheProvider: true,
+});
+
 const provider = ref(null);
 const signer = ref(null);
+const wallet = ref(null);
 
 const state = reactive({
   balance: 0,
@@ -40,6 +45,9 @@ const getAccounts = async () => {
 const benderContract = ref(null);
 
 const initContract = async (signer) => {
+  if (!provider.value) {
+    setProvider();
+  }
   const { BENDER } = await import(`../utils/contracts.${config.mode}.js`)
   benderContract.value  = new ethers.Contract(
     config.bendingAddress,
@@ -61,13 +69,20 @@ const onChangeAccount = async (wallet) => {
 }
 
 const connectWallet = async () => {
-  const web3Modal = new Web3Modal({
-    cacheProvider: true,
-  });
+  wallet.value = await web3Modal.connect();
+  onChangeAccount(wallet.value);
+  listenProviderEvents(wallet.value)
+}
 
-  const wallet = await web3Modal.connect();
-  onChangeAccount(wallet);
-  listenProviderEvents(wallet)
+const disconnectWallet  = async () => {
+  if (wallet.value.close) {
+    await wallet.value.close()
+    web3Modal.clearCachedProvider();
+  }
+  
+  signer.value = null;
+  provider.value = null;
+  initContract();
 }
 
 const listenProviderEvents = (walletProvider) => {
@@ -76,6 +91,9 @@ const listenProviderEvents = (walletProvider) => {
   });
 
   walletProvider.on("chainChanged", (chainId) => {
+    if (chainId !== chainId) {
+      // wrong chain
+    }
     console.log(chainId);
   });
 
@@ -88,12 +106,8 @@ const listenProviderEvents = (walletProvider) => {
   });
 }
 
-const setProvider = async (isMetamask) => {
-  if (isMetamask) {
-    provider.value = new ethers.providers.JsonRpcProvider();
-  } else {
-    provider.value = new ethers.providers.WebSocketProvider("ws://localhost:8545");
-  }
+const setProvider = async () => {
+  provider.value = new ethers.providers.JsonRpcProvider(config.rpcURL);
 }
 
 const { play, stop } = useSound(epic, { 
@@ -106,8 +120,10 @@ const toggleAudio = (mode) => {
 }
 
 onMounted(async () => {
-  setProvider(true);
-  initContract()
+  initContract();
+  if (web3Modal.cachedProvider) {
+    connectWallet();
+  }
 })
 
 </script>
@@ -120,13 +136,13 @@ onMounted(async () => {
     :accounts="state.accounts"
     :selectedMode="state.mode"
     :modes="state.modes"
+    :signer="signer"
     @set-mode="state.mode = $event"
     @music="toggleAudio"
+    @disconnectWallet="disconnectWallet"
     @connectWallet="connectWallet"
     v-model="state.selectedAccount"
   />
-  
-  <button class="btn btn-primary" @click="connectWallet" v-if="!signer"> Start </button>
 
   <div class="flex flex-col items-center justify-center mt-10">
     <div v-if="benderContract && signer" class="mt-40 mb-10">

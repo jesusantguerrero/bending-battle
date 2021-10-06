@@ -1,10 +1,13 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 
-defineProps({
+const props = defineProps({
     modelValue: {
         type: String,
         required: true
+    },
+    signer: {
+        type: Object
     },
     accounts: {
         type: Array,
@@ -24,7 +27,7 @@ defineProps({
     },
 })
 
-const emit = defineEmits(['set-mode', 'play', 'mute']);
+const emit = defineEmits(['set-mode', 'play', 'mute', 'connectWallet', 'disconnectWallet']);
 
 const showMenu = ref(false);
 const setMode = (mode) => {
@@ -39,6 +42,10 @@ const toggleAudio = () => {
     emit('music', mode);
 }
 
+const connectionText = computed(() => props.signer ? 'Disconnect' : 'Connect Wallet');
+const toggleConnection = () => {
+    emit(props.signer ? 'disconnectWallet' : 'connectWallet' )
+}
 </script>
 
 <template>
@@ -51,8 +58,21 @@ const toggleAudio = () => {
              <i :class="[isPlaying ? 'fa fa-volume-mute' : 'fa fa-play']"></i>
         </button>
     </div>
-    <div class="w-8/12 h-full py-2 font-bold text-white border-2 border-t-0 rounded-b-full shadow-lg bg-fire-map-500 border-fire">
-      Bending Battle
+    <div class="flex justify-around w-8/12 h-full py-2 font-bold text-white border-2 border-t-0 rounded-b-full shadow-lg bg-fire-map-500 border-fire">
+      <div>
+        {{ balance }}
+      </div>
+
+      <div>
+        Bending Battle
+      </div>
+
+        <div class="flex items-center space-x-2 cursor-pointer" @click="toggleConnection">
+            <div class="w-3 h-3 border-2 border-white rounded-full"
+            :class="[signer ? 'bg-green-500' : 'bg-fire-map-700']"
+            ></div>
+            <button> {{ connectionText }}</button>
+        </div>
     </div>
     <div>
         <div @click="showMenu=!showMenu" class="flex items-center justify-center mt-2 text-4xl font-bold text-white border-4 border-white rounded-full cursor-pointer bg-fire-map h-36 w-36">
