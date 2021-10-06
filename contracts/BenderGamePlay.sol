@@ -26,13 +26,14 @@ contract BenderGamePlay is BendingCharacter {
     }
 
     function getLevel(uint _benderId) view public returns(uint) {
+        uint level;
         Bender memory bender = benders[_benderId];
         for (uint i = 0; i < levels.length; i++) {
             if (levels[i].min >= bender.HP && levels[i].max <= bender.HP) {
-                return i+1;
-                break;
+                level = i+1;
             }
         }
+        return level;
     }
 
     function _triggerCoolDown(Bender storage _bender) internal {

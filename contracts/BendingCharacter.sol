@@ -32,7 +32,7 @@ contract BendingCharacter is BendingBase {
         _tokenIds.increment();
     }
 
-    function _getBending(string memory _element) private returns(BendingAttributes memory) {
+    function _getBending(string memory _element) view private returns(BendingAttributes memory) {
         if (_isEqual(_element, "fire")) {
             return firebending;
         } else if (_isEqual(_element, 'earth')) {

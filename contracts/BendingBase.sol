@@ -31,7 +31,7 @@ contract BendingBase is BenderBase {
     function setAttackToBender(uint _benderId, uint _attackId) internal {
         benderAttacksCount[_benderId]++;
         benderAttacks.push(BenderAttack(_benderId, _attackId, attacks[_attackId]));
-        uint benderAttackId = benderAttacks.length;
+        uint benderAttackId = benderAttacks.length - 1;
         benderAttackToBender[benderAttackId] = _benderId;
     }
 
@@ -59,11 +59,15 @@ contract BendingBase is BenderBase {
         setAttackToBender(_benderId, index);
     }
 
+    function getAttacks() external view returns (Attack[] memory) {
+        return attacks;
+    }
+
     function getBenderAttacks(uint _benderId) public view returns (Attack[] memory) {
         Attack[] memory myAttacks = new Attack[](benderAttacksCount[_benderId]);
         uint counter = 0;
         
-        for (uint i = 0; i < benders.length; i++) {
+        for (uint i = 0; i < benderAttacks.length; i++) {
             if (benderAttackToBender[i] == _benderId) {
                 myAttacks[counter] = benderAttacks[i].attack;
                 counter++;

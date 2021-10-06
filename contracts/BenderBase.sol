@@ -43,6 +43,4 @@ contract BenderBase is Ownable {
     function getBenders() public view returns (Bender[] memory) {
         return benders;
     }
-
-
 }
