@@ -19,10 +19,6 @@ const props = defineProps({
         }
     })
 
-    const attacks = computed(() => {
-        return [props.bender.attack]
-    })
-
     const nationColor = computed(() => {
         const elements = {
             air: 'bg-blue-300 border-blue-200',
@@ -96,15 +92,12 @@ const props = defineProps({
                 <i :class="bendingIcon" />
             </span>
             <div class="flex space-x-2">
-                <span class="block text-sm text-white">Exp: {{ bender.experience }}</span>
+                <span class="block text-sm text-white">Exp: {{ bender.HP }}</span>
                 <span class="block text-sm text-white">Health: {{ bender.health }}</span>
             </div>
-            <div class="flex space-x-2">
-                <span class="block text-sm text-white">Wins: {{ bender.wins }}</span>
-                <span class="block text-sm text-white">Losses: {{ bender.losses }}</span>
-            </div>
-            <div class="mt-1 text-white">
-                {{ nextAttackAt }}
+            <div class="flex space-x-2" v-if="bender.record">
+                <span class="block text-sm text-white">Wins: {{ bender.record.wins }}</span>
+                <span class="block text-sm text-white">Losses: {{ bender.record.losses }}</span>
             </div>
         </div>
     </div>
