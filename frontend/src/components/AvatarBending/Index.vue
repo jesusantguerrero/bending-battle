@@ -4,6 +4,7 @@ import Admin from "./Admin.vue"
 import { computed, reactive, inject } from "vue";
 import { watch } from "@vue/runtime-core";
 import { ethers } from "ethers";
+import BenderCreation from "./BenderCreation.vue";
 
 const props = defineProps({
     contract: {
@@ -106,17 +107,14 @@ watch(() => props.account, () => {
 
 <template>
 <h1 class="mb-5 text-2xl font-bold text-primary"> {{ msg }} </h1>
-<Admin :contract="contract" v-if="state.admin" @created="updateBenders" :account="account" />
+<BenderCreation 
+    contract="contract" 
+    v-if="!state.hasBenders" 
+    @created="updateBenders" 
+    :account="account" 
+/>
 <div v-else class="flex">
     <List :benders="state.myBenders" @attack="attack" @levelUp="levelUp" :class="{'mr-20': state.isBattle}" />
     <List v-if="state.isBattle" :benders="state.enemies" @select="setEnemy" :selected="state.enemyId" />
 </div>
-<button 
-    v-if="state.admin || (!state.isBattle && !state.hasBenders)"
-    class="mt-5 btn btn-primary" 
-    @click="state.admin = !state.admin" 
->
-    {{ state.toggleButtonText }}
-</button>
-
 </template>
