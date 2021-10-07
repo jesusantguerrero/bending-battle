@@ -3,6 +3,7 @@ import { reactive, toRefs, computed, ref } from 'vue';
 import AvatarCard from './AvatarCard.vue';
 import AbilityCard from './AbilityCard.vue';
 import WizardSection from './WizardSection.vue';
+import ElementCard from './ElementCard.vue';
 
 const props = defineProps({
     contract: {
@@ -92,7 +93,7 @@ const createBender = async () => {
             subtitle="Each element would define your initial attributes and weapon"
         >
             <div class="flex space-x-5">
-                <AvatarCard 
+                <ElementCard
                     v-for="element in elements"
                     :name="element.name"
                     :bender="element"

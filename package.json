@@ -4,12 +4,14 @@
   "description": "demo of web3.0",
   "main": "index.js",
   "scripts": {
+    "project:setup": "npm install && cd frontend npm install",
     "test": "npx hardhat test",
     "compile": "npx hardhat compile",
     "serve": "npx hardhat node",
     "deploy": "npx hardhat run scripts/deploy.js --network localhost",
     "deploy:mumbai": "npx hardhat run scripts/deploy.js --network mumbai",
     "dev": "npm run client:dev",
+    "run:dev": "npm run deploy && npm run client:dev",
     "client:dev": "cd frontend && npm run dev"
   },
   "author": "",

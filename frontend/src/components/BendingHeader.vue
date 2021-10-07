@@ -1,5 +1,7 @@
 <script setup>
 import { ref, computed } from "vue";
+import AppState from "../utils/AppState";
+import BenderOrbe from "./BenderOrbe.vue";
 
 const props = defineProps({
     modelValue: {
@@ -25,6 +27,9 @@ const props = defineProps({
         type: Array,
         required: true
     },
+    bender: {
+        type: Object
+    }
 })
 
 const emit = defineEmits(['set-mode', 'play', 'mute', 'connectWallet', 'disconnectWallet']);
@@ -51,9 +56,10 @@ const toggleConnection = () => {
 <template>
   <div class="fixed top-0 flex justify-around w-full h-10 mx-auto transform bg-header">
     <div class="rounded-md h-36 w-36">
-        <div class="w-full h-full mt-2 text-white bg-fire-map rounded-badge">
-            
-        </div>
+        <BenderOrbe 
+            :level="AppState.level"
+            :bender="AppState.bender"
+        />
         <button class="mt-2 btn btn-sm bg-fire hover:bg-fire-400" @click="toggleAudio">
              <i :class="[isPlaying ? 'fa fa-volume-mute' : 'fa fa-play']"></i>
         </button>
