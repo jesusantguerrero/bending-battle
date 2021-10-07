@@ -59,7 +59,7 @@ contract BenderOwnership is BenderGamePlay, ERC165, IERC721 {
         address _to,
         uint256 _tokenId
     ) external override {
-        require(benderToOwner[_tokenId] == msg.sender || bendersApprovals[_tokenId] == msg.sender);
+        require(benderToOwner[_tokenId] == _from || bendersApprovals[_tokenId] == msg.sender, "The bender should belong to you");
         _transfer(_from, _to, _tokenId);
     }
 
