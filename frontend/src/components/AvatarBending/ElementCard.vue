@@ -69,7 +69,7 @@ const props = defineProps({
 
 <template>
 <div>
-    <div class="relative w-56 px-2 py-5 rounded-md shadow-md h-72 ring ring-offset-base-100 ring-offset-2" 
+    <div class="relative flex flex-col justify-center w-56 px-2 py-5 overflow-hidden rounded-md shadow-md h-72 ring ring-offset-base-100 ring-offset-2" 
     :class="[isSelected ? 'ring-red-400' : 'ring-transparent', nationColor ]"
     >
         <div class="flex items-center justify-center p-1 mx-auto bg-white rounded-full w-28 h-28 avatar-picture">
@@ -80,8 +80,10 @@ const props = defineProps({
         </div>
         <h4 class="mt-2 font-bold text-white"> {{ name }} </h4>
 
-        <span @click="$emit('levelUp')" class="absolute top-0 left-0 flex items-center justify-center text-sm font-bold text-white rounded-tl-md w-9 h-9" :class="orbeColor">{{ bender.level }}</span>
-        <span @click.stop="$emit('attack')" title="Attack" class="absolute z-40 flex items-center justify-center text-sm text-white border-2 border-white w-9 h-9 rounded-badge right-2 bottom-2" :class="[orbeColor]">
+        <span class="absolute top-0 left-0 flex items-center justify-center w-full text-sm font-bold text-white rounded-tl-md h-9" :class="orbeColor">
+            Element
+        </span>
+        <span class="absolute z-40 flex items-center justify-center text-sm text-white border-2 border-white w-9 h-9 rounded-badge right-2 bottom-2" :class="[orbeColor]">
             <i :class="bendingIcon" />
         </span>
         

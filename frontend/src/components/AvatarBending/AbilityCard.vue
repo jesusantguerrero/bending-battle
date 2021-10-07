@@ -33,13 +33,7 @@ const nationColor = computed(() => {
 })
 
 const orbeColor = computed(() => {
-    const elements = {
-        air: 'bg-blue-400 border-gray-200',
-        fire: 'bg-fire-400 border-fire-200',
-        earth: 'bg-green-400 border-roti-300',
-        water: 'bg-blue-400 border-blue-700'
-    }
-    return "bg-fire-map border-fire-map-200"
+    return "bg-gray-200 border-roti-200"
 })
 
 const decrement  = () => {

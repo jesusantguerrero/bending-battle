@@ -1,10 +1,10 @@
 <script setup>
 import List from "./List.vue"
-import Admin from "./Admin.vue"
 import { computed, reactive, inject } from "vue";
 import { watch } from "@vue/runtime-core";
 import { ethers } from "ethers";
 import BenderCreation from "./BenderCreation.vue";
+import AppState from "../../utils/AppState";
 
 const props = defineProps({
     contract: {
@@ -47,6 +47,7 @@ const updateBenders = async () => {
             return big.toNumber()
         });
         state.benders = await props.contract.getBenders();
+        AppState.bender = state.myBenders.length && state.myBenders[0]; 
     } catch (e) {
         console.dir(e);
     }
@@ -109,7 +110,7 @@ watch(() => props.account, () => {
 <h1 class="mb-5 text-2xl font-bold text-primary"> {{ msg }} </h1>
 <BenderCreation 
     :contract="contract" 
-    v-if="!state.hasBenders" 
+    v-if="!state.hasBenders && !state.isBattle" 
     @created="updateBenders" 
     :account="account" 
 />
