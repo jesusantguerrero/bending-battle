@@ -6,20 +6,22 @@
     "build": "vite build",
     "serve": "vite preview"
   },
-  "devDependencies": {
-    "@vueuse/sound": "^1.1.7",
-    "vue": "^3.2.12",
-    "web3modal": "^1.9.4",
-    "@vitejs/plugin-vue": "^1.6.1",
-    "@vue/compiler-sfc": "^3.2.12",
+  "dependencies": {
+    "vue": "^3.2.19",
     "@vueuse/core": "^6.5.3",
     "@vueuse/motion": "^2.0.0-beta.4",
+    "@vueuse/sound": "^1.1.7"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^1.6.1",
+    "@vue/compiler-sfc": "^3.2.19",
     "autoprefixer": "^10.3.4",
     "daisyui": "^1.14.0",
     "ethers": "^5.4.7",
+    "fortmatic": "^2.2.1",
     "postcss": "^8.3.6",
     "tailwindcss": "^2.2.15",
     "vite": "^2.5.4",
-    "web3": "^1.5.2"
+    "web3modal": "^1.9.4"
   }
 }

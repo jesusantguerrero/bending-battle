@@ -22,7 +22,7 @@ defineProps({
             :bender="bender"
             :is-selected="selected == bender.tokenId"
             class="cursor-pointer"
-            @click="$emit('select', bender.tokenId)"
+            @click="$emit('select', bender.tokenId.toNumber())"
             @attack="$emit('attack', bender.tokenId)"
             @levelUp="$emit('levelUp', bender.tokenId)"
         />
