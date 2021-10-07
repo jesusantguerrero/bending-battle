@@ -6,12 +6,11 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
 contract BenderBase is Ownable {
-    uint cooldownTime = 1 minutes; 
+    uint cooldownTime = 1 minutes;
     struct Record {
         uint wins;
         uint losses;
     }
-
     struct Bender {
         uint tokenId;
         uint health;

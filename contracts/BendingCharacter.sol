@@ -22,9 +22,9 @@ contract BendingCharacter is BendingBase {
     BendingAttributes earthbending = BendingAttributes(10, 7, 5, 10);
     BendingAttributes firebending = BendingAttributes(5, 7, 7, 15);
 
-    function _createBender(string memory _name, string memory _element) internal {
+    function _createBender(string memory _name, string memory _element, BendingAttributes memory initialAttributes) internal {
         uint benderId = _tokenIds.current();
-        BendingAttributes memory bending = _getBending(_element);
+        BendingAttributes memory bending = getBending(_element, initialAttributes);
         benders.push(Bender(benderId, 100, 0, bending.strength, bending.speed, bending.agility, bending.chi, uint32(block.timestamp), Record(0, 0), 0, _name, _element));
         benderToOwner[benderId] = msg.sender;
         ownerBendersCount[msg.sender]++;
@@ -32,25 +32,33 @@ contract BendingCharacter is BendingBase {
         _tokenIds.increment();
     }
 
-    function _getBending(string memory _element) view private returns(BendingAttributes memory) {
+    function getBending(string memory _element, BendingAttributes memory _attributes) view public returns(BendingAttributes memory) {
+        BendingAttributes memory bending;
         if (_isEqual(_element, "fire")) {
-            return firebending;
+            bending = firebending;
         } else if (_isEqual(_element, 'earth')) {
-            return earthbending;
+            bending = earthbending;
         } else if (_isEqual(_element, 'water')) {
-            return waterbending;
+            bending = waterbending;
         } else {
-            return airBending;
+            bending = airBending;
         }
+
+        bending.strength += _attributes.strength;
+        bending.speed += _attributes.speed;
+        bending.agility += _attributes.agility;
+        bending.chi += _attributes.chi;
+        return bending;
+
     }
 
     function mintBender(string memory _name, string memory _element) external onlyOwner {
-        _createBender(_name, _element);
+        _createBender(_name, _element, BendingAttributes(0, 0, 0, 0));
     }
 
-    function createRandomBender(string memory _name, string memory _element) public {
+    function createRandomBender(string memory _name, string memory _element, BendingAttributes memory _attributes) public {
         require(ownerBendersCount[msg.sender] == 0, "You can't create more than 1 bender");
-        _createBender(_name, _element);
+        _createBender(_name, _element, _attributes);
     }
 
     function getBendersByOwner(address _owner) external view returns (uint[] memory) {
