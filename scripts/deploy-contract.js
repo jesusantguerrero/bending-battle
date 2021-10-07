@@ -22,7 +22,12 @@ const saveEnvVar = (envName, value) => {
 
 const deployContract = async (contractName, args = null, envName) => {
   const Contract = await hre.ethers.getContractFactory(contractName);
-  const contract = await Contract.deploy(args);
+  let contract;
+  if (args) {
+    contract = await Contract.deploy(...args);
+  } else {
+    contract = await Contract.deploy(args);
+  }
   await contract.deployed();
   if (envName) {
     saveEnvVar(envName, contract.address);
