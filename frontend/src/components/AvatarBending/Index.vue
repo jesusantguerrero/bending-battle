@@ -108,7 +108,7 @@ watch(() => props.account, () => {
 <template>
 <h1 class="mb-5 text-2xl font-bold text-primary"> {{ msg }} </h1>
 <BenderCreation 
-    contract="contract" 
+    :contract="contract" 
     v-if="!state.hasBenders" 
     @created="updateBenders" 
     :account="account" 

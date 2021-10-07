@@ -70,7 +70,7 @@ const increment  = () => {
                 <div class="flex items-center justify-center w-full h-full mx-auto my-auto bg-gray-200 rounded-full text-7xl avatar-picture__container"
                     :style="bgImages"
                 >
-                    {{ modelValue }}
+                    {{ base + modelValue }}
                 </div>
                 <span @click.stop="$emit('attack')" title="Attack" class="absolute z-40 flex items-center justify-center text-sm text-white border-2 border-white w-9 h-9 rounded-badge right-2 -bottom-2" :class="[orbeColor]">
                     <i :class="icon" />

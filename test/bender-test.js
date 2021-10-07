@@ -5,6 +5,13 @@ const { setupContract } = require("../scripts/setupBendingBattle");
 describe("Crypto avatar: the last crypto bender", function () {
   let avatar = null;
   let owner, user2;
+  const attributes = {
+    strength: 5,
+    speed: 5,
+    agility: 5,
+    chi: 5,
+  };
+
   beforeEach(async function () {
     const Avatar = await ethers.getContractFactory("BenderOwnership");
     avatar = await Avatar.deploy();
@@ -17,10 +24,16 @@ describe("Crypto avatar: the last crypto bender", function () {
     expect((await avatar.getAttacks()).length).to.equal(4);
   });
 
+  it("Should return the default bending attributes", async function () {
+    await avatar.deployed();
+    const bending = await avatar.getBending('fire', attributes);
+    expect(Object.values(bending).length).to.equal(8);
+  });
+
   it("Should create a new bender", async function () {
     await avatar.deployed();
 
-    expect(await avatar.createRandomBender("Aang", "air"));
+    expect(await avatar.createRandomBender("Aang", "air", attributes));
     expect((await avatar.getBenders()).length).to.equal(1);
     expect((await avatar.getBenderAttacks(0)).length).to.equal(1);
   });
@@ -28,8 +41,8 @@ describe("Crypto avatar: the last crypto bender", function () {
   it("Should fight with the next bender", async () => {
     await avatar.deployed();
 
-    const trx = await avatar.createRandomBender("Aang", "air");
-    const trx2 = await avatar.connect(user2).createRandomBender("Sokka", "fire");
+    const trx = await avatar.createRandomBender("Aang", "air", attributes);
+    const trx2 = await avatar.connect(user2).createRandomBender("Sokka", "fire", attributes);
 
     trx.wait();
     trx2.wait();
@@ -43,8 +56,8 @@ describe("Crypto avatar: the last crypto bender", function () {
   it("Should get benders by owner", async () => {
     await avatar.deployed();
 
-    await avatar.createRandomBender("Aang", "air");
-    await avatar.connect(user2).createRandomBender("Sokka", "fire");
+    await avatar.createRandomBender("Aang", "air", attributes);
+    await avatar.connect(user2).createRandomBender("Sokka", "fire", attributes);
 
     const ownedByMe = await avatar.getBendersByOwner(owner.address);
     expect(ownedByMe.length).to.equal(1);

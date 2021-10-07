@@ -1,5 +1,5 @@
 <script setup> 
-import { reactive, toRefs, computed } from 'vue';
+import { reactive, toRefs, computed, ref } from 'vue';
 import AvatarCard from './AvatarCard.vue';
 import AbilityCard from './AbilityCard.vue';
 import WizardSection from './WizardSection.vue';
@@ -59,8 +59,21 @@ const pointsLeft = computed(() => {
 })
 
 const { contract } = toRefs(props);
+
+const bendingAttributes = ref({}); 
+const setElement = async (element) => {
+    const attributes = await contract.value.getBending(element, form.abilities);
+    bendingAttributes.value = {
+        strength: attributes.strength.toNumber(),
+        speed: attributes.speed.toNumber(),
+        agility: attributes.agility.toNumber(),
+        chi: attributes.chi,
+    }
+    form.element = element
+}
+
 const createBender = async () => {
-    const trx = await contract.value.createRandomBender(form.name, form.element)
+    const trx = await contract.value.createRandomBender(form.name, form.element, form.abilities)
     .catch(err => {
         console.log(err)
         alert(err.message);
@@ -83,23 +96,24 @@ const createBender = async () => {
                     v-for="element in elements"
                     :name="element.name"
                     :bender="element"
-                    @click="form.element = element.element"
+                    @click="setElement(element.name)"
                     class="transform cursor-pointer hover:scale-105"
                 />
             </div>
         </WizardSection>
 
         <WizardSection
+            v-if="form.element && pointsLeft"
             title="Set your abilities"
             :subtitle="`You've got ${pointsLeft } remaining`"
         >
-            <div v-if="form.element" class="flex space-x-5">
+            <div class="flex space-x-5">
                 <template 
                     v-for="(ability, name) in form.abilities"
                     :key="name"
                 >
                     <AbilityCard
-                        :base="ability"
+                        :base="bendingAttributes[name]"
                         :name="name"
                         :modelValue="ability"
                         :points="pointsLeft"
@@ -109,19 +123,19 @@ const createBender = async () => {
             </div>
         </WizardSection>
 
+        <WizardSection 
+            v-if="form.element && !pointsLeft"
+            title="The name of your bender"
+        >
+            <form @submit.prevent="createBender" class="max-w-2xl mx-auto space-y-2">
+                <div class="form-control">
+                    <label class="label">
+                    <span class="label-text text-primary">Name</span>
+                    </label>
+                    <input type="text" class="input input-bordered input-primary" placeholder="name" required v-model="form.name">
+                </div>
+                <button class="btn btn-primary"> Create my bender </button>
+            </form>
+        </WizardSection>
     </div>
-    <form @submit.prevent="createBender" class="max-w-2xl mx-auto space-y-2">
-        <div class="form-control">
-            <label class="label">
-              <span class="label-text text-primary">Name</span>
-            </label>
-            <input type="text" class="input input-bordered input-primary" placeholder="name" required v-model="form.name">
-        </div>
-        <div class="form-control">
-            <label class="label">
-              <span class="label-text text-primary">Element</span>
-            </label>
-        </div>
-        <button class="btn btn-primary"> Create my bender </button>
-    </form>
 </template>
