@@ -54,7 +54,7 @@ const toggleConnection = () => {
         <div class="w-full h-full mt-2 text-white bg-fire-map rounded-badge">
             
         </div>
-        <button class="mt-2 btn btn-sm btn-primary bg-fire-400" @click="toggleAudio">
+        <button class="mt-2 btn btn-sm bg-fire hover:bg-fire-400" @click="toggleAudio">
              <i :class="[isPlaying ? 'fa fa-volume-mute' : 'fa fa-play']"></i>
         </button>
     </div>
