@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
 
-import "./BenderGamePlay.sol";
+import "./BendingGamePlay.sol";
 import "@openzeppelin/contracts/interfaces/IERC721.sol";
 import "@openzeppelin/contracts/utils/introspection/ERC165.sol";
 
@@ -10,7 +10,7 @@ import "@openzeppelin/contracts/utils/introspection/ERC165.sol";
  * the Metadata extension, but not including the Enumerable extension, which is available separately as
  * {ERC721Enumerable}.
  */
-contract BenderOwnership is BenderGamePlay, ERC165, IERC721 {
+contract BendingNFT is BendingGamePlay, ERC165, IERC721 {
     string private _name;
     string private _symbol;
 

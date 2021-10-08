@@ -1,13 +1,13 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
 
-import "./BenderOwnership.sol";
+import "./BendingNFT.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract BenderNFTMarket is Ownable, ReentrancyGuard {
+contract BendingNFTMarket is Ownable, ReentrancyGuard {
     using Counters for Counters.Counter;
     Counters.Counter private _itemIds;
     Counters.Counter private _itemSold;
@@ -69,7 +69,7 @@ contract BenderNFTMarket is Ownable, ReentrancyGuard {
         );
 
         itemsSellerCount[msg.sender]++;
-        BenderOwnership(_nftContract).transferFrom(msg.sender, address(this), _tokenId);
+        BendingNFT(_nftContract).transferFrom(msg.sender, address(this), _tokenId);
         emit MarketItemCreated(
             itemId,
             _nftContract,
@@ -87,7 +87,7 @@ contract BenderNFTMarket is Ownable, ReentrancyGuard {
         require(price == msg.value, "Please submit the required price");
         
         idToMarketItem[_itemId].seller.transfer(price);
-        BenderOwnership(_nftContract).transferFrom(address(this), msg.sender , tokenId);
+        BendingNFT(_nftContract).transferFrom(address(this), msg.sender , tokenId);
         idToMarketItem[_itemId].owner = payable(msg.sender);
         idToMarketItem[_itemId].sold = true;
         _itemSold.increment();

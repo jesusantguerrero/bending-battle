@@ -13,7 +13,7 @@ describe("Crypto avatar: the last crypto bender", function () {
   };
 
   beforeEach(async function () {
-    const Avatar = await ethers.getContractFactory("BenderOwnership");
+    const Avatar = await ethers.getContractFactory("BendingNFT");
     avatar = await Avatar.deploy("BenderBattleToken", "BBT");
     await setupContract(avatar, false);
     [owner, user2] = await ethers.getSigners();
@@ -76,7 +76,7 @@ describe("Crypto avatar: NFT's functionality", function () {
   };
 
   beforeEach(async function () {
-    const Avatar = await ethers.getContractFactory("BenderOwnership");
+    const Avatar = await ethers.getContractFactory("BendingNFT");
     avatar = await Avatar.deploy("BenderBattleToken", "BBT");
     await setupContract(avatar, false);
     [owner, user2] = await ethers.getSigners();
@@ -110,8 +110,8 @@ describe("Crypto avatar: NFT's Market functionality", function () {
   };
 
   beforeEach(async function () {
-    const Avatar = await ethers.getContractFactory("BenderOwnership");
-    const Market = await ethers.getContractFactory("BenderNFTMarket");
+    const Avatar = await ethers.getContractFactory("BendingNFT");
+    const Market = await ethers.getContractFactory("BendingNFTMarket");
     avatar = await Avatar.deploy("BenderBattleToken", "BBT");
     market = await Market.deploy();
     await setupContract(avatar, false);
