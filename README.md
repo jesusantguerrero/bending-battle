@@ -45,19 +45,12 @@ In addition to the following Dapp topics
 
 ## Built with
 Frontend:
-- [Reactjs](https://reactjs.org/) - A JavaScript library for building user interfaces
+- [Vue.js 3](https://v3.vuejs.org/) - The Progressive JavaScript Framework
+- [ethers.js](https://docs.ethers.io/v5/) - JS library for interacting with the Ethereum Blockchain and its ecosystem
 
-- [highcharts](https://www.highcharts.com/) - charts
 
-Database:
-- [Mongodb](https://www.mongodb.com/) - NoSql Database
-
-backend:
-- [Nodejs](https://nodejs.org/en/) - JavaScript runtime built on Chrome's V8 JavaScript engine.
-- [Express](http://expressjs.com/) - Nodejs application framework
-
-API:
-- [alpha vantage](https://www.alphavantage.co/) - help connect consumers with great local businesses!
+Blockchain Environment:
+- [Hardhat](https://hardhat.org/) - Flexible, extensible and fast Ethereum development environment for professionals.
 
 ## Installation
 
