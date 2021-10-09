@@ -58,8 +58,9 @@ Blockchain Environment:
 
 | Prerequisite                                          | Version |
 | ------------------------------------------------------| ------- |
-| [MetaMask]()                                          | `~ ^8`  |
-| npm (comes with Node) or yarn (used)                  | `~ ^5`  |
+| [MetaMask](https://metamask.io/)                                          |         |
+| npm (comes with Node) or yarn (used)                  | `~ ^12.20.0`|
+| npm (comes with Node) or yarn (used)                  | `~ ^6.14.8`  |
 
 ```shell
 node -v
