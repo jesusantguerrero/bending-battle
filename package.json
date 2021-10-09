@@ -10,9 +10,13 @@
     "serve": "npx hardhat node",
     "deploy": "npx hardhat run scripts/deploy.js --network localhost",
     "deploy:mumbai": "npx hardhat run scripts/deploy.js --network mumbai",
+    "accounts": "npx hardhat run scripts/accounts.js",
     "dev": "npm run client:dev",
     "run:dev": "npm run deploy && npm run client:dev",
-    "client:dev": "cd frontend && npm run dev"
+    "client:dev": "cd frontend && npm run dev",
+    "set:market-contracts": "npm run cp:market && npm run set:market-env",
+    "cp:market": "cp -rf ./artifacts/contracts C:/laragon/www/crypto-bender/src/contracts",
+    "set:market-env": "node scripts/env-to-market.js"
   },
   "author": "",
   "license": "ISC",
