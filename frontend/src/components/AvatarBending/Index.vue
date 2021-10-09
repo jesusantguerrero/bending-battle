@@ -27,15 +27,13 @@ const props = defineProps({
 
 const state = reactive({
     benders: [],
+    myBenders: [],
     admin: false,
     enemyId: null,
     toggleButtonText: computed(() => state.admin ? "Back to List" : "Create bender"),
-    myBendersIndexes: [],
     isBattle: computed(() => props.mode == 'battle'),
     hasBenders: computed(() => state.myBenders.length > 0),
-    myBenders: computed(() => state.benders.filter((bender) => {
-        return state.myBendersIndexes.includes(bender.tokenId.toNumber())
-    })),
+    myBendersIndexes: computed(() => state.myBenders.map((bender) => bender.tokenId.toNumber())),
     enemies: computed(() => state.benders.filter((bender) => {
         return !state.myBendersIndexes.includes(bender.tokenId.toNumber())
     })),
@@ -43,9 +41,7 @@ const state = reactive({
 
 const updateBenders = async () => {
     try {
-        state.myBendersIndexes = (await props.contract.getBendersByOwner(props.account)).map(big => {
-            return big.toNumber()
-        });
+        state.myBenders = await props.contract.getMyBenders();
         state.benders = await props.contract.getBenders();
         AppState.bender = state.myBenders.length && state.myBenders[0]; 
     } catch (e) {
