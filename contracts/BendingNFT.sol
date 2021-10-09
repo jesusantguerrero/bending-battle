@@ -35,7 +35,7 @@ contract BendingNFT is BendingGamePlay, ERC165, IERC721 {
     }
 
     function ownerOf(uint256 _tokenId)
-        external
+        public
         view
         override
         returns (address)
@@ -59,7 +59,8 @@ contract BendingNFT is BendingGamePlay, ERC165, IERC721 {
         address _to,
         uint256 _tokenId
     ) external override {
-        require(benderToOwner[_tokenId] == _from || bendersApprovals[_tokenId] == msg.sender, "The bender should belong to you");
+        address owner = ownerOf(_tokenId);
+        require(owner == _from || benderToOwner[_tokenId] == msg.sender || bendersApprovals[_tokenId] == msg.sender, "The bender should belong to you");
         _transfer(_from, _to, _tokenId);
     }
 

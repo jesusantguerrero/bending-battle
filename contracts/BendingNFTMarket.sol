@@ -3,6 +3,7 @@ pragma solidity ^0.8.0;
 
 import "./BendingNFT.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -69,7 +70,7 @@ contract BendingNFTMarket is Ownable, ReentrancyGuard {
         );
 
         itemsSellerCount[msg.sender]++;
-        BendingNFT(_nftContract).transferFrom(msg.sender, address(this), _tokenId);
+        IERC721(_nftContract).transferFrom(msg.sender, address(this), _tokenId);
         emit MarketItemCreated(
             itemId,
             _nftContract,
@@ -87,12 +88,37 @@ contract BendingNFTMarket is Ownable, ReentrancyGuard {
         require(price == msg.value, "Please submit the required price");
         
         idToMarketItem[_itemId].seller.transfer(price);
-        BendingNFT(_nftContract).transferFrom(address(this), msg.sender , tokenId);
+        IERC721(_nftContract).transferFrom(address(this), msg.sender , tokenId);
         idToMarketItem[_itemId].owner = payable(msg.sender);
         idToMarketItem[_itemId].sold = true;
         _itemSold.increment();
         payable(contractOwner).transfer(listingPrice);
         itemsOwnerCount[msg.sender]++;
+    }
+
+    function resellMarketItem(address _nftContract, uint _itemId, uint _price) public payable nonReentrant {
+        require(_price > 0, "Price must be at least 1 wei");
+        require(msg.value == listingPrice, "Price must be equal to listing price");
+
+        MarketItem storage marketItem = idToMarketItem[_itemId];
+
+        marketItem.sold = false;
+        marketItem.price = _price;
+        marketItem.seller = payable(msg.sender);
+        marketItem.owner = payable(address(0));
+
+        itemsSellerCount[msg.sender]++;
+        itemsOwnerCount[msg.sender]--;
+        IERC721(_nftContract).transferFrom(msg.sender, address(this), marketItem.tokenId);
+        emit MarketItemCreated(
+            _itemId,
+            _nftContract,
+            marketItem.tokenId,
+            payable(msg.sender),
+            payable(address(0)),
+            _price,
+            false 
+        );
     }
 
     function getMarketItems() public view returns (MarketItem[] memory) {

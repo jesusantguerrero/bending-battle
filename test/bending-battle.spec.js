@@ -35,6 +35,7 @@ describe("Crypto avatar: the last crypto bender", function () {
 
     expect(await avatar.createRandomBender("Aang", "air", attributes));
     expect((await avatar.getBenders()).length).to.equal(1);
+    expect((await avatar.getBender(0)).name).to.equal("Aang");
     expect((await avatar.getBenderAttacks(0)).length).to.equal(1);
   });
 
@@ -141,5 +142,11 @@ describe("Crypto avatar: NFT's Market functionality", function () {
     expect((await market.connect(user2).getMyNFTs()).length).to.equal(1);
     //  The market place should have 0
     expect((await market.getMarketItems()).length).to.equal(0);
+
+    // sell and buy back
+    market.connect(user2).resellMarketItem(avatar.address, 1, ethers.utils.parseEther("0.10"), { value: listingPrice })
+    expect((await market.connect(user2).getMyNFTs()).length).to.equal(0);
+    market.createMarketSale(avatar.address, 1, { value: ethers.utils.parseEther("0.10") })
+    expect((await market.getMyNFTs()).length).to.equal(1);
   });
 });
