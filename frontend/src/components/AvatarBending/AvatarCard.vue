@@ -5,9 +5,6 @@ const props = defineProps({
         name: {
             type: String,
         },
-        element: {
-            type: String,
-        },
         bender: {
             type: Object,
             required: true,
@@ -18,6 +15,8 @@ const props = defineProps({
         }
     })
 
+    const element = props.bender.element.toLowerCase();
+
     const nationColor = computed(() => {
         const elements = {
             air: 'bg-blue-300 border-blue-200',
@@ -25,7 +24,7 @@ const props = defineProps({
             earth: 'bg-green-500 border-green-400',
             water: 'bg-blue-600 border-blue-500'
         }
-        return elements[props.bender.element]
+        return elements[element]
     })
 
     const bgImages = computed(() => {
@@ -36,7 +35,7 @@ const props = defineProps({
             water: '/water-bg.jpg',
         };
 
-        const bgImage = bgImages[props.bender.element]
+        const bgImage = bgImages[element]
 
         return {
             backgroundImage: `url(${bgImage})`,
@@ -53,7 +52,7 @@ const props = defineProps({
             earth: 'fas fa-feather-alt',
         };
 
-        return bgImages[props.bender.element]
+        return bgImages[element]
     })
 
     const orbeColor = computed(() => {
@@ -63,7 +62,7 @@ const props = defineProps({
             earth: 'bg-green-400 border-roti-300',
             water: 'bg-blue-400 border-blue-700'
         }
-        return elements[props.bender.element]
+        return elements[element]
     })
 </script>
 

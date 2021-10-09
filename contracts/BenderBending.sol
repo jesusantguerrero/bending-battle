@@ -5,7 +5,7 @@ import "./BenderBase.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
-contract BendingBase is BenderBase {
+contract BenderBending is BenderBase {
     struct Attack {
         uint32 minDamage;
         uint32 maxDamage;

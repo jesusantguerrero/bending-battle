@@ -76,12 +76,13 @@ const setElement = async (element) => {
 const createBender = async () => {
     const trx = await contract.value.createRandomBender(form.name, form.element, form.abilities)
     .catch(err => {
-        console.log(err)
-        alert(err.message);
+        alert(err.data.message);
     });
-    await trx.wait();
-    emit('created');
-    clearForm();
+    if (trx) {
+        await trx.wait();
+        emit('created');
+        clearForm();
+    }
 }
 </script>
 
@@ -94,10 +95,10 @@ const createBender = async () => {
         >
             <div class="flex space-x-5">
                 <ElementCard
-                    v-for="element in elements"
+                    v-for="(element, elementName) in elements"
                     :name="element.name"
                     :bender="element"
-                    @click="setElement(element.name)"
+                    @click="setElement(elementName)"
                     class="transform cursor-pointer hover:scale-105"
                 />
             </div>

@@ -2,9 +2,9 @@
 pragma solidity ^0.8.0;
 
 import "hardhat/console.sol";
-import "./BendingCharacter.sol";
+import "./BenderHelper.sol";
 
-contract BenderGamePlay is BendingCharacter {
+contract BendingGamePlay is BenderHelper {
     event AttackAction(string benderName, uint256 damage, string message);
     event FightResult(uint damage, uint damageReceived, string winner);
 
