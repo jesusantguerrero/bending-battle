@@ -23,6 +23,7 @@
     "dotenv": "^10.0.0",
     "ether": "0.0.9",
     "ethereum-waffle": "^3.4.0",
+    "ethers": "^5.4.7",
     "hardhat": "^2.6.4"
   },
   "dependencies": {

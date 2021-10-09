@@ -3,8 +3,9 @@ const { deployContract } = require("./deploy-contract");
 const { setupContract } = require("./setupBendingBattle");
 
 async function main() {
+  const market = await deployContract("BendingNFTMarket", null, "VITE_BENDING_MARKET_ADDRESS");
   await deployContract("BendingNFT", ["CryptoBender", "BBT"], "VITE_BENDING_ADDRESS").then(
-    setupContract
+    (contract) => setupContract(contract, true, market)
   );
 }
 

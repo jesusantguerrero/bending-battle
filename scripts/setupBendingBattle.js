@@ -1,3 +1,4 @@
+const { ethers }  = require("ethers");
 
 const heroes = [
   {
@@ -54,12 +55,18 @@ const heroes = [
   },
 ];
 
-async function setupContract(contract, createBenders = true) {
+async function setupContract(contract, createBenders = true, market = null) {
+  let count = 0;
   for (hero of heroes) {
     const { minDamage, maxDamange, precision, cost, name, element, price } = hero.attack;
     await contract.createAttack(minDamage, maxDamange, precision, cost, name, element, price);
     if (createBenders) {
       await contract.mintBender(hero.name, hero.element);
+      if (market) {
+        const listingPrice = await market.getListingPrice();
+        await market.createMarketItem(contract.address, count, ethers.utils.parseEther("0.05"), { value: listingPrice });
+        count++;
+      }
     }
   }
 }
