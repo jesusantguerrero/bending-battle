@@ -1,9 +1,10 @@
 <script setup> 
 import { reactive, toRefs, computed, ref } from 'vue';
-import AvatarCard from './AvatarCard.vue';
 import AbilityCard from './AbilityCard.vue';
 import WizardSection from './WizardSection.vue';
 import ElementCard from './ElementCard.vue';
+import { useContract } from '../../utils/useContract';
+const { connectWallet } = useContract();
 
 const props = defineProps({
     contract: {
@@ -76,6 +77,7 @@ const setElement = async (element) => {
 const createBender = async () => {
     const trx = await contract.value.createRandomBender(form.name, form.element, form.abilities)
     .catch(err => {
+        console.log(err);
         alert(err.data.message);
     });
     if (trx) {
@@ -134,7 +136,7 @@ const createBender = async () => {
                     <label class="label">
                     <span class="label-text text-primary">Name</span>
                     </label>
-                    <input type="text" class="input input-bordered input-primary" placeholder="name" required v-model="form.name">
+                    <input type="text" class="text-gray-300 input dark:text-white input-bordered input-primary" placeholder="name" required v-model="form.name">
                 </div>
                 <button class="btn btn-primary"> Create my bender </button>
             </form>
