@@ -111,7 +111,7 @@ watch(() => props.account, () => {
     :account="account" 
 />
 <div v-else class="flex">
-    <List :benders="state.myBenders" @attack="attack" @levelUp="levelUp" :class="{'mr-20': state.isBattle}" />
-    <List v-if="state.isBattle" :benders="state.enemies" @select="setEnemy" :selected="state.enemyId" />
+    <List :account="account" :benders="state.myBenders" @attack="attack" @levelUp="levelUp" :class="{'mr-20': state.isBattle}" />
+    <List :account="account" v-if="state.isBattle" :benders="state.enemies" @select="setEnemy" :selected="state.enemyId" />
 </div>
 </template>

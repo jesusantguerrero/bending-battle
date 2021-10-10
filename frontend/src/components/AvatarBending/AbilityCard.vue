@@ -56,6 +56,7 @@ const increment  = () => {
         <div class="flex items-center justify-around w-full">
             <button 
                 @click="decrement()" 
+                :disabled="modelValue == 0"
                 class="border-2 btn hover:border-fire-map border-fire-map bg-fire hover:bg-fire-300"
             >
              <i class="fa fa-minus"></i> 

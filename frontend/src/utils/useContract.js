@@ -35,11 +35,6 @@ export const useContract = () => {
         state.balance = await provider.value.getBalance(address);
     }
     
-    const getAccounts = async () => {
-        state.accounts = await provider.value.listAccounts();
-        state.selectedAccount = state.accounts[0];
-    }
-    
     //  Contracts
     const benderContract = ref(null);
     
@@ -49,21 +44,19 @@ export const useContract = () => {
         }
         const { BENDER } = await import(`../utils/contracts.${config.mode}.js`)
         benderContract.value  = new ethers.Contract(
-        config.bendingAddress,
-        BENDER.abi, 
-        signer || provider.value
+            config.bendingAddress,
+            BENDER.abi, 
+            signer || provider.value
         );
-        
-        if (signer) {
-        await getAccounts();
-        }
         return benderContract;
     }
     
-    const onChangeAccount = async (wallet) => {
+    const onChangeAccount = async (wallet, account) => {
         provider.value = new ethers.providers.Web3Provider(wallet, "any");
-        const user = provider.value.getSigner();
+        const selectedAddress = account || wallet.selectedAddress;
+        const user = provider.value.getSigner(selectedAddress);
         await initContract(user)
+        state.selectedAccount = selectedAddress;
         signer.value = user;
     }
     
@@ -75,8 +68,8 @@ export const useContract = () => {
     
     const disconnectWallet  = async () => {
         if (wallet.value.close) {
-        await wallet.value.close()
-        web3Modal.clearCachedProvider();
+            await wallet.value.close()
+            web3Modal.clearCachedProvider();
         }
         
         signer.value = null;
@@ -86,27 +79,19 @@ export const useContract = () => {
     
     const listenProviderEvents = (walletProvider) => {
         walletProvider.on("accountsChanged", (accounts) => {
-            onChangeAccount(walletProvider, accounts)
+            onChangeAccount(walletProvider, accounts[0])
         });
     
         walletProvider.on("chainChanged", (chainId) => {
-        if (chainId !== chainId) {
-            // wrong chain
-        }
-        console.log(chainId);
-        });
-    
-        walletProvider.on("connect", (info) => {
-        console.log(info);
-        });
-    
-        walletProvider.on("disconnect", (error) => {
-        console.log(error);
+            if (chainId !== chainId) {
+                // wrong chain
+            }
+            onChangeAccount(wallet);
         });
     }
     
     const setProvider = async () => {
-        provider.value = new ethers.providers.JsonRpcProvider(config.rpcURL);
+        provider.value = new ethers.providers.JsonRpcProvider(config.rpcURL, "any");
     }
 
     onMounted(async () => {
