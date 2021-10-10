@@ -1,4 +1,4 @@
-import Web3Modal from "web3modal/dist";
+import Web3Modal from "web3modal/dist/";
 import { ethers } from "ethers";
 import config from "../../config";
 import { ref, reactive, computed, onMounted, watch } from "vue";
@@ -26,7 +26,9 @@ export const useContract = () => {
     })
   
     watch(() => state.selectedAccount, (account) => {
-        getBalance(account)
+        if (account) {
+            getBalance(account, signer.value)
+        }
     })
   
     const getBalance = async (address) => {
@@ -59,7 +61,7 @@ export const useContract = () => {
     }
     
     const onChangeAccount = async (wallet) => {
-        provider.value = new ethers.providers.Web3Provider(window.web3.currentProvider, "any");
+        provider.value = new ethers.providers.Web3Provider(wallet, "any");
         const user = provider.value.getSigner();
         await initContract(user)
         signer.value = user;
@@ -84,7 +86,7 @@ export const useContract = () => {
     
     const listenProviderEvents = (walletProvider) => {
         walletProvider.on("accountsChanged", (accounts) => {
-        onChangeAccount(walletProvider, accounts)
+            onChangeAccount(walletProvider, accounts)
         });
     
         walletProvider.on("chainChanged", (chainId) => {
@@ -104,11 +106,7 @@ export const useContract = () => {
     }
     
     const setProvider = async () => {
-        if (window.web3) {
-            provider.value = new ethers.providers.Web3Provider(window.web3.currentProvider, "any");
-        } else {
-            provider.value = new ethers.providers.JsonRpcProvider(config.rpcURL);
-        }
+        provider.value = new ethers.providers.JsonRpcProvider(config.rpcURL);
     }
 
     onMounted(async () => {
