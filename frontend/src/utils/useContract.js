@@ -43,7 +43,7 @@ export const useContract = () => {
     
     const initContract = async (signer) => {
         if (!provider.value) {
-        setProvider();
+            setProvider();
         }
         const { BENDER } = await import(`../utils/contracts.${config.mode}.js`)
         benderContract.value  = new ethers.Contract(
@@ -59,7 +59,7 @@ export const useContract = () => {
     }
     
     const onChangeAccount = async (wallet) => {
-        provider.value = new ethers.providers.Web3Provider(wallet, "any");
+        provider.value = new ethers.providers.Web3Provider(window.web3.currentProvider, "any");
         const user = provider.value.getSigner();
         await initContract(user)
         signer.value = user;
@@ -104,7 +104,11 @@ export const useContract = () => {
     }
     
     const setProvider = async () => {
-        provider.value = new ethers.providers.JsonRpcProvider(config.rpcURL);
+        if (window.web3) {
+            provider.value = new ethers.providers.Web3Provider(window.web3.currentProvider, "any");
+        } else {
+            provider.value = new ethers.providers.JsonRpcProvider(config.rpcURL);
+        }
     }
 
     onMounted(async () => {
