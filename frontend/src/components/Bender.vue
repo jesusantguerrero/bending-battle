@@ -44,7 +44,7 @@ const { benderContract, contractState, signer, disconnectWallet, connectWallet }
     <div v-if="benderContract && signer" class="mt-40 mb-10">
       <AvatarBending 
         :contract="benderContract"  
-        :account="state.selectedAccount"
+        :account="contractState.selectedAccount"
         :mode="state.mode"
         msg=""
       />

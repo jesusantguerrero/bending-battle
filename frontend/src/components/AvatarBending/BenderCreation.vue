@@ -3,8 +3,6 @@ import { reactive, toRefs, computed, ref } from 'vue';
 import AbilityCard from './AbilityCard.vue';
 import WizardSection from './WizardSection.vue';
 import ElementCard from './ElementCard.vue';
-import { useContract } from '../../utils/useContract';
-const { connectWallet } = useContract();
 
 const props = defineProps({
     contract: {
@@ -74,17 +72,22 @@ const setElement = async (element) => {
     form.element = element
 }
 
+const isLoading = ref(false);
 const createBender = async () => {
+    if (isLoading.value) return;
+    isLoading.value = true;
     const trx = await contract.value.createRandomBender(form.name, form.element, form.abilities)
     .catch(err => {
         console.log(err);
-        alert(err.data.message);
+        const message = err?.message || err.data?.message;
+        alert(message);
     });
     if (trx) {
         await trx.wait();
         emit('created');
         clearForm();
     }
+    isLoading.value = false;
 }
 </script>
 
@@ -138,7 +141,12 @@ const createBender = async () => {
                     </label>
                     <input type="text" class="text-gray-300 input dark:text-white input-bordered input-primary" placeholder="name" required v-model="form.name">
                 </div>
-                <button class="btn btn-primary"> Create my bender </button>
+                <button class="btn btn-primary"
+                    :disabled="isLoading"
+                > 
+                    <i class="fa fa-spin fa-spinner" v-if="isLoading"></i>
+                    Create my bender 
+                 </button>
             </form>
         </WizardSection>
     </div>
