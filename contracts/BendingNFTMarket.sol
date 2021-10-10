@@ -12,6 +12,7 @@ contract BendingNFTMarket is Ownable, ReentrancyGuard {
     using Counters for Counters.Counter;
     Counters.Counter private _itemIds;
     Counters.Counter private _itemSold;
+    Counters.Counter private _itemSoldTransactions;
     
     address payable contractOwner;
     uint listingPrice = 0.025 ether;
@@ -23,11 +24,13 @@ contract BendingNFTMarket is Ownable, ReentrancyGuard {
         address payable seller;
         address payable owner;
         uint price;
+        uint lastPrice;
         bool sold;
     }
 
     mapping(address => uint) private itemsSellerCount;
     mapping(address => uint) private itemsOwnerCount;
+    mapping(uint => address[]) private itemsOwnerHistory;
     mapping(uint => MarketItem) private idToMarketItem;
 
     event MarketItemCreated(
@@ -37,6 +40,7 @@ contract BendingNFTMarket is Ownable, ReentrancyGuard {
         address payable seller,
         address payable owner,
         uint price,
+        uint lastPrice,
         bool sold
     );
 
@@ -66,6 +70,7 @@ contract BendingNFTMarket is Ownable, ReentrancyGuard {
             payable(msg.sender),
             payable(address(0)),
             _price,
+            0,
             false
         );
 
@@ -78,6 +83,7 @@ contract BendingNFTMarket is Ownable, ReentrancyGuard {
             payable(msg.sender),
             payable(address(0)),
             _price,
+            0,
             false 
         );
     }
@@ -94,6 +100,7 @@ contract BendingNFTMarket is Ownable, ReentrancyGuard {
         _itemSold.increment();
         payable(contractOwner).transfer(listingPrice);
         itemsOwnerCount[msg.sender]++;
+        itemsOwnerHistory[_itemId].push(msg.sender);
     }
 
     function resellMarketItem(address _nftContract, uint _itemId, uint _price) public payable nonReentrant {
@@ -109,6 +116,7 @@ contract BendingNFTMarket is Ownable, ReentrancyGuard {
 
         itemsSellerCount[msg.sender]++;
         itemsOwnerCount[msg.sender]--;
+        _itemSold.decrement();
         IERC721(_nftContract).transferFrom(msg.sender, address(this), marketItem.tokenId);
         emit MarketItemCreated(
             _itemId,
@@ -117,8 +125,13 @@ contract BendingNFTMarket is Ownable, ReentrancyGuard {
             payable(msg.sender),
             payable(address(0)),
             _price,
+            marketItem.price,
             false 
         );
+    }
+
+    function getMarketItem(uint _itemId) public view returns (MarketItem memory) {
+        return idToMarketItem[_itemId];
     }
 
     function getMarketItems() public view returns (MarketItem[] memory) {

@@ -40,15 +40,6 @@ contract BenderHelper is BenderBending {
 
     }
 
-    function mintBender(string memory _name, string memory _element) external onlyOwner {
-        _createBender(_name, _element, BendingAttributes(0, 0, 0, 0));
-    }
-
-    function createRandomBender(string memory _name, string memory _element, BendingAttributes memory _attributes) public {
-        require(ownerBendersCount[msg.sender] == 0, "You can't create more than 1 bender");
-        _createBender(_name, _element, _attributes);
-    }
-
     function _getBendersByOf(address _owner) internal view returns (Bender[] memory) {
         Bender[] memory bendersByOwner = new Bender[](ownerBendersCount[_owner]);
         uint counter = 0;
