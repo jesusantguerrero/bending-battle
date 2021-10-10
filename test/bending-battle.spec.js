@@ -2,8 +2,24 @@ const { expect } = require("chai");
 const { ethers } = require("hardhat");
 const { setupContract } = require("../scripts/setupBendingBattle");
 
+let avatar = null;
+let market = null;
+
+const setContracts = async () => {
+  const Market = await ethers.getContractFactory("BendingNFTMarket");
+  const Avatar = await ethers.getContractFactory("BendingNFT");
+  market = await Market.deploy();
+  avatar = await Avatar.deploy(market.address);
+  await avatar.deployed();
+  await market.deployed();
+  await setupContract(avatar, false);
+  return {
+    avatar, 
+    market
+  }
+}
+
 describe("Crypto avatar: the last crypto bender", function () {
-  let avatar = null;
   let owner, user2;
   const attributes = {
     strength: 5,
@@ -12,29 +28,24 @@ describe("Crypto avatar: the last crypto bender", function () {
     chi: 5,
   };
 
-  beforeEach(async function () {
-    const Avatar = await ethers.getContractFactory("BendingNFT");
-    avatar = await Avatar.deploy("BenderBattleToken", "BBT");
-    await setupContract(avatar, false);
+  beforeEach(async () => {
+    await setContracts();
     [owner, user2] = await ethers.getSigners();
   });
 
   it("Default attacks should have been created", async function () {
-    await avatar.deployed();
     expect((await avatar.getAttacks()).length).to.equal(4);
   });
 
   it("Should return the default bending attributes", async function () {
-    await avatar.deployed();
     const bending = await avatar.getBending('fire', attributes);
     expect(Object.values(bending).length).to.equal(8);
   });
 
   it("Should create a new bender", async function () {
-    await avatar.deployed();
-
     expect(await avatar.createRandomBender("Aang", "air", attributes));
     expect((await avatar.getBenders()).length).to.equal(1);
+    expect((await avatar.getBender(0)).name).to.equal("Aang");
     expect((await avatar.getBenderAttacks(0)).length).to.equal(1);
   });
 
@@ -66,7 +77,6 @@ describe("Crypto avatar: the last crypto bender", function () {
 
 
 describe("Crypto avatar: NFT's functionality", function () {
-  let avatar = null;
   let owner, user2;
   const attributes = {
     strength: 5,
@@ -75,12 +85,9 @@ describe("Crypto avatar: NFT's functionality", function () {
     chi: 5,
   };
 
-  beforeEach(async function () {
-    const Avatar = await ethers.getContractFactory("BendingNFT");
-    avatar = await Avatar.deploy("BenderBattleToken", "BBT");
-    await setupContract(avatar, false);
+  beforeEach(async () => {
+    await setContracts();
     [owner, user2] = await ethers.getSigners();
-    await avatar.deployed();
     await avatar.createRandomBender("Aang", "air", attributes);
   });
   
@@ -100,7 +107,6 @@ describe("Crypto avatar: NFT's functionality", function () {
 
 
 describe("Crypto avatar: NFT's Market functionality", function () {
-  let avatar, market = null;
   let owner, user2;
   const attributes = {
     strength: 5,
@@ -110,14 +116,8 @@ describe("Crypto avatar: NFT's Market functionality", function () {
   };
 
   beforeEach(async function () {
-    const Avatar = await ethers.getContractFactory("BendingNFT");
-    const Market = await ethers.getContractFactory("BendingNFTMarket");
-    avatar = await Avatar.deploy("BenderBattleToken", "BBT");
-    market = await Market.deploy();
-    await setupContract(avatar, false);
+    await setContracts();
     [owner, user2] = await ethers.getSigners();
-    await avatar.deployed();
-    await market.deployed();
     await avatar.createRandomBender("Aang", "air", attributes);
     
   });
@@ -141,5 +141,12 @@ describe("Crypto avatar: NFT's Market functionality", function () {
     expect((await market.connect(user2).getMyNFTs()).length).to.equal(1);
     //  The market place should have 0
     expect((await market.getMarketItems()).length).to.equal(0);
+    expect((await avatar.getBender(0))).to.exist;
+
+    // sell and buy back
+    market.connect(user2).resellMarketItem(avatar.address, 1, ethers.utils.parseEther("0.10"), { value: listingPrice })
+    expect((await market.connect(user2).getMyNFTs()).length).to.equal(0);
+    market.createMarketSale(avatar.address, 1, { value: ethers.utils.parseEther("0.10") })
+    expect((await market.getMyNFTs()).length).to.equal(1);
   });
 });
